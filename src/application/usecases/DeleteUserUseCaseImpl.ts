@@ -7,6 +7,7 @@ import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { DeleteUserRequest, DeleteUserResponse } from '../../shared/types';
 import { NotFoundError } from '../../shared/errors';
 import { getTraceMetadata } from '../../shared/utils';
+import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 export class DeleteUserUseCaseImpl implements DeleteUserUseCase {
@@ -17,7 +18,7 @@ export class DeleteUserUseCaseImpl implements DeleteUserUseCase {
   ) {}
 
   async execute(request: DeleteUserRequest): Promise<DeleteUserResponse> {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('DeleteUserUseCase.execute');
 
     try {
@@ -38,7 +39,7 @@ export class DeleteUserUseCaseImpl implements DeleteUserUseCase {
         }
 
         // Delete user (soft delete with domain event)
-        existingUser.delete();
+        existingUser.delete(request.deletedBy);
 
         // Copy domain events before saving (as save() will clear them)
         const domainEvents = [...existingUser.domainEvents];

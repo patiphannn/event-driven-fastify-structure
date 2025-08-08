@@ -58,7 +58,7 @@ src/
 
 1. **Clone and navigate to the project:**
    ```bash
-   cd mcsv2
+   cd event-driven-fastify-structure
    ```
 
 2. **Install dependencies:**
@@ -318,7 +318,7 @@ CMD ["npm", "start"]
 | `REDIS_URL` | Redis connection string | `redis://localhost:6379` |
 | `LOG_LEVEL` | Logging level | `info` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OpenTelemetry endpoint | `http://localhost:4318/v1/traces` |
-| `OTEL_SERVICE_NAME` | Service name for tracing | `user-service` |
+| `OTEL_SERVICE_NAME` | Service name for tracing (also configured in `src/shared/config/index.ts`) | `user-service` |
 | `NODE_ENV` | Environment mode | `development` |
 
 ## 🏭 Production Considerations

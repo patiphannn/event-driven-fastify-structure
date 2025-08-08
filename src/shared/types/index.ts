@@ -1,3 +1,5 @@
+import { UserInfo } from './UserInfo';
+
 export interface TraceMetadata {
   traceId: string;
   spanId: string;
@@ -6,6 +8,7 @@ export interface TraceMetadata {
 export interface CreateUserRequest {
   email: string;
   name: string;
+  createdBy?: UserInfo;
 }
 
 export interface CreateUserResponse {
@@ -24,6 +27,10 @@ export interface ListUsersResponse {
     email: string;
     name: string;
     createdAt: string;
+    updatedAt: string;
+    createdBy?: UserInfo;
+    updatedBy?: UserInfo;
+    deletedBy?: UserInfo;
   }>;
   pagination: {
     page: number;
@@ -37,6 +44,7 @@ export interface UpdateUserRequest {
   id: string;
   email?: string;
   name?: string;
+  updatedBy?: UserInfo;
 }
 
 export interface UpdateUserResponse {
@@ -47,6 +55,7 @@ export interface UpdateUserResponse {
 
 export interface DeleteUserRequest {
   id: string;
+  deletedBy?: UserInfo;
 }
 
 export interface DeleteUserResponse {

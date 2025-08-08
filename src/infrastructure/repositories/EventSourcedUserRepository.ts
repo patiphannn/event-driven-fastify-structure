@@ -3,6 +3,7 @@ import { User } from '../../domain/entities/User';
 import { EventStore } from '../../domain/repositories/EventStore';
 import { ConflictError, NotFoundError } from '../../shared/errors';
 import { DatabaseClient } from '../database/DatabaseClient';
+import { Prisma } from '@prisma/client';
 import pino from 'pino';
 
 const logger = pino({ name: 'EventSourcedUserRepository' });
@@ -38,6 +39,9 @@ export class EventSourcedUserRepository implements UserRepository {
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
           deletedAt: user.deletedAt,
+          createdBy: user.createdBy ? user.createdBy as any : Prisma.DbNull,
+          updatedBy: user.updatedBy ? user.updatedBy as any : Prisma.DbNull,
+          deletedBy: user.deletedBy ? user.deletedBy as any : Prisma.DbNull,
         },
         update: {
           email: user.email,
@@ -45,6 +49,8 @@ export class EventSourcedUserRepository implements UserRepository {
           version: user.version,
           updatedAt: user.updatedAt,
           deletedAt: user.deletedAt,
+          updatedBy: user.updatedBy ? user.updatedBy as any : Prisma.DbNull,
+          deletedBy: user.deletedBy ? user.deletedBy as any : Prisma.DbNull,
         },
       });
 
@@ -85,7 +91,10 @@ export class EventSourcedUserRepository implements UserRepository {
 
       // Fallback to snapshot table
       const userRecord = await this.prisma.user.findUnique({
-        where: { id },
+        where: {
+          id,
+          deletedAt: null,
+        },
       });
 
       if (!userRecord) {
@@ -98,7 +107,10 @@ export class EventSourcedUserRepository implements UserRepository {
         userRecord.name,
         userRecord.createdAt,
         userRecord.updatedAt,
-        userRecord.deletedAt
+        userRecord.deletedAt,
+        userRecord.createdBy as any,
+        userRecord.updatedBy as any,
+        userRecord.deletedBy as any
       );
     } catch (error) {
       logger.error({ error, userId: id }, 'Failed to find user by ID');
@@ -109,7 +121,10 @@ export class EventSourcedUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {
     // For email lookups, we use the snapshot table for performance
     const userRecord = await this.prisma.user.findUnique({
-      where: { email },
+      where: {
+        email,
+        deletedAt: null,
+      },
     });
 
     if (!userRecord) {
@@ -127,6 +142,7 @@ export class EventSourcedUserRepository implements UserRepository {
       this.prisma.user.findMany({
         skip: offset,
         take: limit,
+        where: { deletedAt: null },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.user.count(),
@@ -135,7 +151,17 @@ export class EventSourcedUserRepository implements UserRepository {
     // For list queries, we can use snapshots for performance
     // But we could reconstruct from events if needed for full consistency
     const userEntities = users.map(
-      (user: any) => new User(user.id, user.email, user.name, user.createdAt, user.updatedAt, user.deletedAt)
+      (user: any) => new User(
+        user.id, 
+        user.email, 
+        user.name, 
+        user.createdAt, 
+        user.updatedAt, 
+        user.deletedAt,
+        user.createdBy,
+        user.updatedBy,
+        user.deletedBy
+      )
     );
 
     return { users: userEntities, total };

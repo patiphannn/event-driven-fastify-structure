@@ -23,10 +23,16 @@ const getUserHistorySchema = {
             type: 'object',
             properties: {
               eventType: { type: 'string' },
-              eventData: { type: 'object' },
+              eventData: { 
+                type: 'object',
+                additionalProperties: true
+              },
               occurredAt: { type: 'string', format: 'date-time' },
               version: { type: 'number' },
-              metadata: { type: 'object' }
+              metadata: { 
+                type: 'object',
+                additionalProperties: true
+              }
             }
           }
         },
@@ -101,8 +107,14 @@ const getAllEventsSchema = {
               aggregateId: { type: 'string' },
               eventType: { type: 'string' },
               eventVersion: { type: 'number' },
-              eventData: { type: 'object' },
-              metadata: { type: 'object' },
+              eventData: { 
+                type: 'object',
+                additionalProperties: true
+              },
+              metadata: { 
+                type: 'object',
+                additionalProperties: true
+              },
               occurredAt: { type: 'string', format: 'date-time' }
             }
           }
@@ -143,8 +155,14 @@ const getEventsByTypeSchema = {
             properties: {
               aggregateId: { type: 'string' },
               eventVersion: { type: 'number' },
-              eventData: { type: 'object' },
-              metadata: { type: 'object' },
+              eventData: { 
+                type: 'object',
+                additionalProperties: true
+              },
+              metadata: { 
+                type: 'object',
+                additionalProperties: true
+              },
               occurredAt: { type: 'string', format: 'date-time' }
             }
           }

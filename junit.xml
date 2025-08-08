@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Unit Tests" tests="66" failures="0" errors="0" time="5.171">
+  <testsuite name="OutboxEvent Entity" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="3.477" tests="5">
+    <testcase classname="OutboxEvent Entity create static method" name="should create an outbox event with required fields" time="0.008">
+    </testcase>
+    <testcase classname="OutboxEvent Entity create static method" name="should create an outbox event without metadata" time="0.001">
+    </testcase>
+    <testcase classname="OutboxEvent Entity create static method" name="should generate unique IDs for different events" time="0">
+    </testcase>
+    <testcase classname="OutboxEvent Entity constructor" name="should create an outbox event with all fields" time="0">
+    </testcase>
+    <testcase classname="OutboxEvent Entity constructor" name="should create an outbox event with default values" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="EventSourcedUserRepository" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="3.531" tests="8">
+    <testcase classname="EventSourcedUserRepository save" name="should save a new user with events" time="0.006">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository save" name="should throw ConflictError for duplicate email" time="0.012">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findById" name="should return a user when found" time="0.001">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findById" name="should return null when user not found" time="0.002">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findByEmail" name="should return a user when found by email" time="0">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findByEmail" name="should return null when user not found by email" time="0.001">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findMany" name="should return paginated users with event sourcing" time="0">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findMany" name="should handle pagination correctly" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="FlexibleAggregateRoot (AggregateRoot flexibility tests)" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="3.549" tests="13">
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Basic AggregateRoot functionality" name="should create an aggregate with id and timestamps" time="0.003">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Basic AggregateRoot functionality" name="should handle custom creation and update timestamps" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should add domain events and increment version" time="0.002">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should update timestamp when adding domain events" time="0.014">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should clear domain events" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should handle multiple domain events" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should replay events to rebuild aggregate state" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should handle empty event stream" time="0.017">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should handle single creation event" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Immutability and encapsulation" name="should return readonly domain events" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Immutability and encapsulation" name="should maintain internal state consistency" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Edge cases and error handling" name="should handle rapid successive updates" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Edge cases and error handling" name="should maintain correct event ordering" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="PrismaEventStore" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="3.569" tests="6">
+    <testcase classname="PrismaEventStore saveEvents" name="should save domain events with version control" time="0.007">
+    </testcase>
+    <testcase classname="PrismaEventStore saveEvents" name="should handle empty events array" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore saveEvents" name="should throw error for version conflict" time="0.021">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should retrieve events for an aggregate" time="0.002">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should return empty array when no events found" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should filter by version when provided" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="User Entity" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="3.698" tests="17">
+    <testcase classname="User Entity constructor" name="should create a user with valid data" time="0.037">
+    </testcase>
+    <testcase classname="User Entity constructor" name="should throw ValidationError for invalid email" time="0.026">
+    </testcase>
+    <testcase classname="User Entity constructor" name="should throw ValidationError for invalid name" time="0.006">
+    </testcase>
+    <testcase classname="User Entity create static method" name="should create a user and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity create static method" name="should trim and lowercase email" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should update name and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should not add event if name is the same" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should throw ValidationError for invalid name" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should throw ValidationError when user is deleted" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should update email and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should not add event if email is the same" time="0">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should throw ValidationError for invalid email" time="0">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should throw ValidationError when user is deleted" time="0">
+    </testcase>
+    <testcase classname="User Entity delete" name="should soft delete user and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity delete" name="should not add event if already deleted" time="0">
+    </testcase>
+    <testcase classname="User Entity domain events" name="should clear domain events" time="0">
+    </testcase>
+    <testcase classname="User Entity event sourcing" name="should replay events correctly" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreateUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="4.441" tests="4">
+    <testcase classname="CreateUserUseCaseImpl execute" name="should create a user successfully" time="0.006">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should throw ConflictError if user already exists" time="0.005">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should create outbox event with correct data" time="0.001">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should execute within unit of work" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="DeleteUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="4.594" tests="6">
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should delete a user successfully" time="0.004">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should throw NotFoundError if user does not exist" time="0.009">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should throw NotFoundError if user is already deleted" time="0.001">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should create outbox event with correct data" time="0.001">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should set deletedAt timestamp when deleting" time="0">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should execute within unit of work" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="UpdateUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-08-08T06:50:15" time="4.598" tests="7">
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should update a user successfully" time="0.003">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should throw NotFoundError if user does not exist" time="0.007">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should throw ConflictError if email already exists for another user" time="0.001">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should allow updating email to the same email" time="0">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should create outbox event with correct data" time="0.001">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should update only name if email is not provided" time="0">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should execute within unit of work" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>

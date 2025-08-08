@@ -1,4 +1,5 @@
 export interface DomainEvent {
+  id: string;
   aggregateId: string;
   eventType: string;
   eventVersion: number;
@@ -14,6 +15,7 @@ export interface DomainEvent {
 }
 
 export abstract class BaseDomainEvent implements DomainEvent {
+  public readonly id: string;
   public readonly occurredAt: Date;
   public readonly eventVersion: number = 1;
 
@@ -29,6 +31,7 @@ export abstract class BaseDomainEvent implements DomainEvent {
       spanId?: string;
     }
   ) {
+    this.id = crypto.randomUUID();
     this.occurredAt = new Date();
   }
 }

@@ -13,6 +13,16 @@ export class PrismaEventStore implements EventStore {
     this.prisma = DatabaseClient.getInstance();
   }
 
+  private extractUpdatedBy(event_data: any): any {
+    if (event_data.updatedBy) {
+      return event_data.updatedBy;
+    }
+    if (event_data.deletedBy) {
+      return event_data.deletedBy;
+    }
+    return null;
+  }
+
   async saveEvents(aggregateId: string, events: DomainEvent[], expectedVersion: number): Promise<void> {
     if (events.length === 0) {
       return;
@@ -35,12 +45,14 @@ export class PrismaEventStore implements EventStore {
 
         // Save all events
         const eventRecords = events.map((event, index) => ({
+          id: event.id,
           aggregateId: event.aggregateId,
           eventType: event.eventType,
           eventVersion: expectedVersion + index + 1,
           eventData: event.eventData,
           metadata: event.metadata || {},
           occurredAt: event.occurredAt,
+          updatedBy: this.extractUpdatedBy(event.eventData),
         }));
 
         await tx.eventLog.createMany({
@@ -74,6 +86,7 @@ export class PrismaEventStore implements EventStore {
     });
 
     return eventRecords.map((record: any) => ({
+      id: record.id,
       aggregateId: record.aggregateId,
       eventType: record.eventType,
       eventVersion: record.eventVersion,
@@ -93,9 +106,19 @@ export class PrismaEventStore implements EventStore {
       where,
       orderBy: { position: 'asc' },
       take: maxCount,
+      select: {
+        id: true,
+        aggregateId: true,
+        eventType: true,
+        eventVersion: true,
+        eventData: true,
+        metadata: true,
+        occurredAt: true,
+      },
     });
 
     return eventRecords.map((record: any) => ({
+      id: record.id,
       aggregateId: record.aggregateId,
       eventType: record.eventType,
       eventVersion: record.eventVersion,
@@ -115,9 +138,20 @@ export class PrismaEventStore implements EventStore {
       where,
       orderBy: { position: 'asc' },
       take: maxCount,
+      select: {
+        id: true,
+        aggregateId: true,
+        eventType: true,
+        eventVersion: true,
+        eventData: true,
+        metadata: true,
+        occurredAt: true,
+        // Explicitly exclude position to avoid BigInt serialization issues
+      },
     });
 
     return eventRecords.map((record: any) => ({
+      id: record.id,
       aggregateId: record.aggregateId,
       eventType: record.eventType,
       eventVersion: record.eventVersion,

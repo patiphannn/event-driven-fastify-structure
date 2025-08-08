@@ -5,6 +5,7 @@ import { DeleteUserUseCase } from '../../application/ports/DeleteUserUseCase';
 import { ListUsersUseCase } from '../../application/usecases/ListUsersUseCaseImpl';
 import { CreateUserRequest, UpdateUserRequest, DeleteUserRequest, ListUsersRequest } from '../../shared/types';
 import { ValidationError, ConflictError, NotFoundError } from '../../shared/errors';
+import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
 import pino from 'pino';
 
@@ -19,16 +20,16 @@ export class UserController {
   ) {}
 
   async listUsers(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('UserController.listUsers');
 
     try {
       const query = request.query as any;
       const page = query.page ? parseInt(query.page) : 1;
-      const limit = query.limit ? parseInt(query.limit) : 10;
+      const limit = query.limit ? parseInt(query.limit) : CONFIG.PAGINATION.DEFAULT_LIMIT;
 
       // Validation
-      if (page < 1 || limit < 1 || limit > 100) {
+      if (page < 1 || limit < 1 || limit > CONFIG.PAGINATION.MAX_LIMIT) {
         span.setAttributes({
           'error.type': 'validation_error',
           'error.message': 'Invalid page or limit parameters',
@@ -79,17 +80,21 @@ export class UserController {
   }
 
   async createUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('UserController.createUser');
 
     try {
       const { email, name } = request.body as CreateUserRequest;
+      
+      // Get authenticated user from optional auth middleware
+      const authenticatedUser = (request as any).user || null;
 
       span.setAttributes({
         'http.method': request.method,
         'http.url': request.url,
         'user.email': email,
         'user.name': name,
+        'user.hasCreator': !!authenticatedUser,
       });
 
       // Basic validation
@@ -104,14 +109,27 @@ export class UserController {
         });
       }
 
-      const result = await this.createUserUseCase.execute({ email, name });
+      const result = await this.createUserUseCase.execute({ 
+        email, 
+        name,
+        createdBy: authenticatedUser ? {
+          id: authenticatedUser.id,
+          name: authenticatedUser.name,
+          email: authenticatedUser.email
+        } : undefined
+      });
 
       span.setAttributes({
         'user.id': result.id,
         'http.status_code': 202,
       });
 
-      logger.info({ userId: result.id, email, name }, 'User creation initiated');
+      logger.info({ 
+        userId: result.id, 
+        email, 
+        name, 
+        createdBy: authenticatedUser?.email || 'anonymous' 
+      }, 'User creation initiated');
 
       return reply.status(202).send(result);
     } catch (error) {
@@ -156,12 +174,13 @@ export class UserController {
   }
 
   async updateUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('UserController.updateUser');
 
     try {
       const { id } = request.params as { id: string };
       const { email, name } = request.body as Omit<UpdateUserRequest, 'id'>;
+      const currentUser = (request as any).user; // User info from auth middleware
 
       span.setAttributes({
         'http.method': request.method,
@@ -169,6 +188,8 @@ export class UserController {
         'user.id': id,
         'user.email': email || 'not_updated',
         'user.name': name || 'not_updated',
+        'updated_by.id': currentUser?.id || 'unknown',
+        'updated_by.email': currentUser?.email || 'unknown',
       });
 
       // Basic validation
@@ -194,7 +215,12 @@ export class UserController {
         });
       }
 
-      const result = await this.updateUserUseCase.execute({ id, email, name });
+      const result = await this.updateUserUseCase.execute({ 
+        id, 
+        email, 
+        name, 
+        updatedBy: currentUser 
+      });
 
       span.setAttributes({
         'user.id': result.id,
@@ -206,7 +232,8 @@ export class UserController {
         userId: result.id, 
         version: result.version,
         email: email || 'not_updated',
-        name: name || 'not_updated'
+        name: name || 'not_updated',
+        updatedBy: currentUser
       }, 'User updated successfully');
 
       return reply.status(200).send(result);
@@ -264,16 +291,19 @@ export class UserController {
   }
 
   async deleteUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('UserController.deleteUser');
 
     try {
       const { id } = request.params as { id: string };
+      const currentUser = (request as any).user; // User info from auth middleware
 
       span.setAttributes({
         'http.method': request.method,
         'http.url': request.url,
         'user.id': id,
+        'deleted_by.id': currentUser?.id || 'unknown',
+        'deleted_by.email': currentUser?.email || 'unknown',
       });
 
       // Basic validation
@@ -288,7 +318,10 @@ export class UserController {
         });
       }
 
-      const result = await this.deleteUserUseCase.execute({ id });
+      const result = await this.deleteUserUseCase.execute({ 
+        id, 
+        deletedBy: currentUser 
+      });
 
       span.setAttributes({
         'user.id': result.id,
@@ -298,7 +331,8 @@ export class UserController {
 
       logger.info({ 
         userId: result.id, 
-        version: result.version
+        version: result.version,
+        deletedBy: currentUser
       }, 'User deleted successfully');
 
       return reply.status(200).send(result);

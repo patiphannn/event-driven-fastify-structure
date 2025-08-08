@@ -56,19 +56,38 @@ export class EventHistoryController {
     try {
       const events = await this.eventStore.getAllEvents(fromPosition, maxCount);
       
-      logger.info({ eventCount: events.length, fromPosition, maxCount }, 'All events retrieved');
+      console.log('Controller - Raw events received:', JSON.stringify(events, null, 2));
       
-      return {
-        events: events.map(event => ({
+      const mappedEvents = events.map(event => {
+        console.log('Mapping event:', {
+          eventType: event.eventType,
+          eventData: event.eventData,
+          eventDataType: typeof event.eventData,
+          eventDataStringified: JSON.stringify(event.eventData)
+        });
+        
+        return {
           aggregateId: event.aggregateId,
           eventType: event.eventType,
           eventVersion: event.eventVersion,
           eventData: event.eventData,
           metadata: event.metadata,
           occurredAt: event.occurredAt,
-        })),
+        };
+      });
+      
+      console.log('Controller - Final mapped events:', JSON.stringify(mappedEvents, null, 2));
+      
+      logger.info({ eventCount: events.length, fromPosition, maxCount }, 'All events retrieved');
+      
+      const result = {
+        events: mappedEvents,
         count: events.length,
       };
+      
+      console.log('Controller - Final result:', JSON.stringify(result, null, 2));
+      
+      return result;
     } catch (error) {
       logger.error({ error, fromPosition, maxCount }, 'Failed to get all events');
       throw error;

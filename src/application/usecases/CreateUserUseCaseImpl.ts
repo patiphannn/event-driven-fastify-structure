@@ -7,6 +7,7 @@ import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { CreateUserRequest, CreateUserResponse } from '../../shared/types';
 import { ConflictError } from '../../shared/errors';
 import { getTraceMetadata } from '../../shared/utils';
+import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 export class CreateUserUseCaseImpl implements CreateUserUseCase {
@@ -17,7 +18,7 @@ export class CreateUserUseCaseImpl implements CreateUserUseCase {
   ) {}
 
   async execute(request: CreateUserRequest): Promise<CreateUserResponse> {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('CreateUserUseCase.execute');
     
     try {
@@ -34,7 +35,7 @@ export class CreateUserUseCaseImpl implements CreateUserUseCase {
         }
 
         // Create new user
-        const user = User.create(request.email, request.name);
+        const user = User.create(request.email, request.name, request.createdBy);
         
         // Copy domain events before saving (as save() will clear them)
         const domainEvents = [...user.domainEvents];

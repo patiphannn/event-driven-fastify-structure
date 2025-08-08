@@ -3,6 +3,11 @@ import { BaseDomainEvent } from './DomainEvent';
 export interface UserCreatedEventData {
   email: string;
   name: string;
+  createdBy?: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export class UserCreatedEvent extends BaseDomainEvent {
@@ -29,6 +34,11 @@ export interface UserUpdatedEventData {
   name?: string;
   email?: string;
   version?: number;
+  updatedBy?: {
+    id: string;
+    name: string;
+    email: string;
+  };
   previousValues: {
     name?: string;
     email?: string;
@@ -59,6 +69,11 @@ export interface UserDeletedEventData {
   email: string;
   name: string;
   deletedAt: Date;
+  deletedBy?: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export class UserDeletedEvent extends BaseDomainEvent {

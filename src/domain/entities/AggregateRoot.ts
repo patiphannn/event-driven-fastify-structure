@@ -45,35 +45,48 @@ export abstract class AggregateRoot {
     // Create initial aggregate from first event
     const firstEvent = events[0];
     
-    // For User aggregates, we need to handle UserCreated specially
-    if (firstEvent.eventType === 'UserCreated' && firstEvent.eventData) {
-      const eventData = firstEvent.eventData;
-      // Create User with data from the UserCreated event
-      const aggregate = new aggregateClass(
-        firstEvent.aggregateId,
-        eventData.email || 'unknown@example.com',  // fallback
-        eventData.name || 'Unknown User',           // fallback
-        firstEvent.occurredAt,
-        firstEvent.occurredAt
-      );
-
-      // Apply all events to rebuild state (skip the first as it was used for construction)
-      events.forEach((event, index) => {
-        if (index > 0) { // Skip first event as it was used for construction
-          (aggregate as any).when(event);
+    // Try to create aggregate using the creation event data
+    let aggregate: T;
+    
+    // Check if the aggregate class has a static factory method for creation events
+    if (typeof (aggregateClass as any).fromCreationEvent === 'function') {
+      aggregate = (aggregateClass as any).fromCreationEvent(firstEvent);
+    } else {
+      // Fallback - try to create with basic constructor parameters
+      try {
+        // For entities that need specific constructor parameters, try with event data
+        if (firstEvent.eventData && Object.keys(firstEvent.eventData).length > 0) {
+          const eventData = firstEvent.eventData;
+          // Try different constructor patterns based on available data
+          aggregate = new aggregateClass(
+            firstEvent.aggregateId,
+            eventData.email || eventData.identifier || 'default',
+            eventData.name || eventData.title || 'Default Name',
+            firstEvent.occurredAt,
+            firstEvent.occurredAt
+          );
+        } else {
+          // Minimal constructor with just ID and timestamp
+          aggregate = new aggregateClass(firstEvent.aggregateId, firstEvent.occurredAt);
         }
-        aggregate.applyEvent(event);
-      });
-
-      return aggregate;
+      } catch (error) {
+        // Last resort - create with minimal data and let when() handlers build the state
+        aggregate = new aggregateClass(firstEvent.aggregateId);
+      }
     }
 
-    // Fallback - create with minimal data and let when() handlers build the state
-    const aggregate = new aggregateClass(firstEvent.aggregateId, firstEvent.occurredAt);
-
     // Apply all events to rebuild state
-    events.forEach(event => {
-      (aggregate as any).when(event);
+    events.forEach((event, index) => {
+      // If we used fromCreationEvent, skip the first event as it was already handled
+      if (typeof (aggregateClass as any).fromCreationEvent === 'function' && index === 0) {
+        aggregate.applyEvent(event);
+        return;
+      }
+      
+      // Apply event through when() handler and update version
+      if (typeof (aggregate as any).when === 'function') {
+        (aggregate as any).when(event);
+      }
       aggregate.applyEvent(event);
     });
 

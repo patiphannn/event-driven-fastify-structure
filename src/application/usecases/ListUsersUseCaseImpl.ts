@@ -1,6 +1,7 @@
 import { UserRepository } from '../../domain/repositories/UserRepository';
 import { ListUsersRequest, ListUsersResponse } from '../../shared/types';
 import { CacheService } from '../../infrastructure/cache/CacheService';
+import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 export interface ListUsersUseCase {
@@ -14,12 +15,12 @@ export class ListUsersUseCaseImpl implements ListUsersUseCase {
   ) {}
 
   async execute(request: ListUsersRequest): Promise<ListUsersResponse> {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('ListUsersUseCase.execute');
 
     try {
       const page = request.page || 1;
-      const limit = Math.min(request.limit || 10, 100); // Max 100 items per page
+      const limit = Math.min(request.limit || CONFIG.PAGINATION.DEFAULT_LIMIT, CONFIG.PAGINATION.MAX_LIMIT);
 
       span.setAttributes({
         'users.list.page': page,
@@ -48,6 +49,10 @@ export class ListUsersUseCaseImpl implements ListUsersUseCase {
           email: user.email,
           name: user.name,
           createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString(),
+          createdBy: user.createdBy || undefined,
+          updatedBy: user.updatedBy || undefined,
+          deletedBy: user.deletedBy || undefined,
         })),
         pagination: {
           page,

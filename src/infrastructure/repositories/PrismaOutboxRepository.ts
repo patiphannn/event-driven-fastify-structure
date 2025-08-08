@@ -8,9 +8,10 @@ export class PrismaOutboxRepository implements OutboxRepository {
   async save(event: OutboxEvent): Promise<OutboxEvent> {
     const savedEvent = await this.prisma.outboxEvent.create({
       data: {
+        id: event.id,
         eventType: event.eventType,
         eventData: event.eventData,
-        metadata: event.metadata ? JSON.parse(JSON.stringify(event.metadata)) : null,
+        metadata: event.metadata as any,
         processed: event.processed,
         processedAt: event.processedAt,
       },

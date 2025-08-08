@@ -25,6 +25,10 @@ export const swaggerOptions: FastifyDynamicSwaggerOptions = {
     ],
     tags: [
       {
+        name: 'Authentication',
+        description: 'Authentication and authorization operations',
+      },
+      {
         name: 'Users',
         description: 'User management operations',
       },
@@ -34,6 +38,14 @@ export const swaggerOptions: FastifyDynamicSwaggerOptions = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter JWT token received from login endpoint',
+        },
+      },
       schemas: {
         CreateUserRequest: {
           type: 'object',

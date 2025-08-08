@@ -11,7 +11,6 @@ import swaggerUi from '@fastify/swagger-ui';
 import pino from 'pino';
 import { DatabaseClient } from './infrastructure/database/DatabaseClient';
 import { RedisClient } from './infrastructure/cache/RedisClient';
-import { PrismaUserRepository } from './infrastructure/repositories/PrismaUserRepository';
 import { PrismaOutboxRepository } from './infrastructure/repositories/PrismaOutboxRepository';
 import { PrismaUnitOfWork } from './infrastructure/database/PrismaUnitOfWork';
 import { PrismaEventStore } from './infrastructure/repositories/PrismaEventStore';
@@ -22,8 +21,11 @@ import { DeleteUserUseCaseImpl } from './application/usecases/DeleteUserUseCaseI
 import { ListUsersUseCaseImpl } from './application/usecases/ListUsersUseCaseImpl';
 import { CacheService } from './infrastructure/cache/CacheService';
 import { UserController } from './presentation/controllers/UserController';
+import { AuthController } from './presentation/controllers/AuthController';
 import { EventHistoryController } from './presentation/controllers/EventHistoryController';
+import { AuthMiddleware } from './presentation/middleware/AuthMiddleware';
 import { registerUserRoutes } from './presentation/routes/userRoutes';
+import { registerAuthRoutes } from './presentation/routes/authRoutes';
 import { registerEventHistoryRoutes } from './presentation/routes/eventHistoryRoutes';
 import { swaggerOptions, swaggerUiOptions } from './infrastructure/swagger/SwaggerConfig';
 
@@ -58,11 +60,15 @@ async function createApp() {
   logger.info('Redis client initialized');
 
   // Initialize dependencies
+  const prismaClient = DatabaseClient.getInstance();
   const eventStore = new PrismaEventStore();
   const userRepository = new EventSourcedUserRepository(eventStore);
   const outboxRepository = new PrismaOutboxRepository();
   const unitOfWork = new PrismaUnitOfWork();
   const cacheService = new CacheService(redisClient);
+
+  // Decorate app with Prisma client for testing
+  app.decorate('prisma', prismaClient);
   
   // Initialize use cases
   const createUserUseCase = new CreateUserUseCaseImpl(
@@ -88,16 +94,21 @@ async function createApp() {
     cacheService
   );
 
-  // Initialize controllers
+  // Initialize controllers and middleware
+  const authController = new AuthController();
+  const authMiddleware = new AuthMiddleware();
   const userController = new UserController(createUserUseCase, updateUserUseCase, deleteUserUseCase, listUsersUseCase);
   const eventHistoryController = new EventHistoryController(eventStore, userRepository);
 
   // Register routes
-  registerUserRoutes(app, userController);
+  registerAuthRoutes(app, authController, authMiddleware);
+  registerUserRoutes(app, userController, authMiddleware);
   registerEventHistoryRoutes(app, eventHistoryController);
 
   return app;
 }
+
+export { createApp };
 
 async function start() {
   try {

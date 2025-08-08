@@ -1,6 +1,7 @@
 import { ValidationError } from '../../shared/errors';
 import { validateEmail, validateName } from '../../shared/utils';
 import { getTraceMetadata } from '../../shared/utils';
+import { UserInfo } from '../../shared/types/UserInfo';
 import { AggregateRoot } from './AggregateRoot';
 import { DomainEvent } from '../events/DomainEvent';
 import { 
@@ -16,6 +17,9 @@ export class User extends AggregateRoot {
   private _email: string;
   private _name: string;
   private _deletedAt: Date | null = null;
+  private _createdBy: UserInfo | null = null;
+  private _updatedBy: UserInfo | null = null;
+  private _deletedBy: UserInfo | null = null;
 
   constructor(
     id: string,
@@ -23,7 +27,10 @@ export class User extends AggregateRoot {
     name: string,
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
-    deletedAt: Date | null = null
+    deletedAt: Date | null = null,
+    createdBy: UserInfo | null = null,
+    updatedBy: UserInfo | null = null,
+    deletedBy: UserInfo | null = null
   ) {
     super(id, createdAt, updatedAt);
     
@@ -38,6 +45,9 @@ export class User extends AggregateRoot {
     this._email = email;
     this._name = name;
     this._deletedAt = deletedAt;
+    this._createdBy = createdBy;
+    this._updatedBy = updatedBy;
+    this._deletedBy = deletedBy;
   }
 
   get email(): string {
@@ -56,14 +66,47 @@ export class User extends AggregateRoot {
     return this._deletedAt !== null;
   }
 
-  static create(email: string, name: string): User {
+  get createdBy(): UserInfo | null {
+    return this._createdBy;
+  }
+
+  get updatedBy(): UserInfo | null {
+    return this._updatedBy;
+  }
+
+  get deletedBy(): UserInfo | null {
+    return this._deletedBy;
+  }
+
+  // Static factory method for creating User from creation event (used by AggregateRoot.replayEvents)
+  static fromCreationEvent(event: DomainEvent): User {
+    if (event.eventType !== 'UserCreated') {
+      throw new Error('Invalid creation event type for User aggregate');
+    }
+    
+    const eventData = event.eventData as UserCreatedEventData;
+    return new User(
+      event.aggregateId,
+      eventData.email || 'unknown@example.com',
+      eventData.name || 'Unknown User',
+      event.occurredAt,
+      event.occurredAt,
+      null, // deletedAt
+      eventData.createdBy || null, // createdBy
+      null, // updatedBy
+      null // deletedBy
+    );
+  }
+
+  static create(email: string, name: string, createdBy?: UserInfo): User {
     const id = crypto.randomUUID();
-    const user = new User(id, email.toLowerCase().trim(), name.trim());
+    const user = new User(id, email.toLowerCase().trim(), name.trim(), new Date(), new Date(), null, createdBy || null);
     
     // Add domain event
     const eventData: UserCreatedEventData = {
       email: user.email,
-      name: user.name
+      name: user.name,
+      createdBy
     };
     
     const metadata = getTraceMetadata();
@@ -73,7 +116,7 @@ export class User extends AggregateRoot {
     return user;
   }
 
-  updateName(newName: string): void {
+  updateName(newName: string, updatedBy?: UserInfo): void {
     if (this.isDeleted) {
       throw new ValidationError('Cannot update deleted user');
     }
@@ -83,26 +126,30 @@ export class User extends AggregateRoot {
     }
 
     const trimmedName = newName.trim();
-    if (this._name === trimmedName) {
-      return; // No change needed
+    
+    // Don't create event if name hasn't changed
+    if (trimmedName === this._name) {
+      return;
     }
 
-    const eventData: UserUpdatedEventData = {
-      name: trimmedName,
-      previousValues: {
-        name: this._name
-      }
-    };
-
+    const oldName = this._name;
     this._name = trimmedName;
-    this.updatedAt = new Date();
+    this._updatedBy = updatedBy || null;
+
+    const eventData: UserUpdatedEventData = {
+      name: this._name,
+      previousValues: {
+        name: oldName,
+      },
+      updatedBy,
+    };
 
     const metadata = getTraceMetadata();
     const event = new UserUpdatedEvent(this.id, eventData, metadata);
     this.addDomainEvent(event);
   }
 
-  updateEmail(newEmail: string): void {
+  updateEmail(newEmail: string, updatedBy?: UserInfo): void {
     if (this.isDeleted) {
       throw new ValidationError('Cannot update deleted user');
     }
@@ -111,40 +158,46 @@ export class User extends AggregateRoot {
       throw new ValidationError('Invalid email format');
     }
 
-    const trimmedEmail = newEmail.toLowerCase().trim();
-    if (this._email === trimmedEmail) {
-      return; // No change needed
+    const normalizedEmail = newEmail.toLowerCase().trim();
+    
+    // Don't create event if email hasn't changed
+    if (normalizedEmail === this._email) {
+      return;
     }
 
-    const eventData: UserUpdatedEventData = {
-      email: trimmedEmail,
-      previousValues: {
-        email: this._email
-      }
-    };
+    const oldEmail = this._email;
+    this._email = normalizedEmail;
+    this._updatedBy = updatedBy || null;
 
-    this._email = trimmedEmail;
-    this.updatedAt = new Date();
+    const eventData: UserUpdatedEventData = {
+      email: this._email,
+      previousValues: {
+        email: oldEmail,
+      },
+      updatedBy,
+    };
 
     const metadata = getTraceMetadata();
     const event = new UserUpdatedEvent(this.id, eventData, metadata);
     this.addDomainEvent(event);
   }
 
-  delete(): void {
+  delete(deletedBy?: UserInfo): void {
     if (this.isDeleted) {
       return; // Already deleted
     }
 
     const deletedAt = new Date();
+    this._deletedAt = deletedAt;
+    this._deletedBy = deletedBy || null;
+    this.updatedAt = new Date();
+
     const eventData: UserDeletedEventData = {
       email: this._email,
       name: this._name,
-      deletedAt
+      deletedAt,
+      deletedBy
     };
-
-    this._deletedAt = deletedAt;
-    this.updatedAt = new Date();
 
     const metadata = getTraceMetadata();
     const event = new UserDeletedEvent(this.id, eventData, metadata);

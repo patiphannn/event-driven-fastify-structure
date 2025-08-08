@@ -1,13 +1,15 @@
 import { FastifyInstance } from 'fastify';
 import { UserController } from '../controllers/UserController';
+import { AuthMiddleware } from '../middleware/AuthMiddleware';
 
-export const registerUserRoutes = (fastify: FastifyInstance, userController: UserController) => {
+export const registerUserRoutes = (fastify: FastifyInstance, userController: UserController, authMiddleware: AuthMiddleware) => {
   // POST /users - Create a new user
   fastify.post('/users', {
+    preHandler: [authMiddleware.optionalAuth.bind(authMiddleware)],
     schema: {
       tags: ['Users'],
       summary: 'Create a new user',
-      description: 'Creates a new user account asynchronously. Returns 202 Accepted with user ID while processing continues in the background.',
+      description: 'Creates a new user account asynchronously. Returns 202 Accepted with user ID while processing continues in the background. Optional authentication tracks creator.',
       body: {
         type: 'object',
         required: ['email', 'name'],
@@ -122,6 +124,21 @@ export const registerUserRoutes = (fastify: FastifyInstance, userController: Use
                     format: 'date-time',
                     description: 'User last update timestamp',
                   },
+                  createdBy: { 
+                    type: 'object',
+                    additionalProperties: true,
+                    description: 'User who created this account',
+                  },
+                  updatedBy: { 
+                    type: 'object',
+                    additionalProperties: true,
+                    description: 'User who last updated this account',
+                  },
+                  deletedBy: { 
+                    type: 'object',
+                    additionalProperties: true,
+                    description: 'User who deleted this account',
+                  },
                 },
               },
             },
@@ -175,10 +192,12 @@ export const registerUserRoutes = (fastify: FastifyInstance, userController: Use
 
   // PUT /users/:id - Update a user
   fastify.put('/users/:id', {
+    preHandler: [authMiddleware.authenticate.bind(authMiddleware)],
     schema: {
       tags: ['Users'],
       summary: 'Update user information',
       description: 'Updates user email and/or name. At least one field must be provided. Returns updated user information.',
+      security: [{ bearerAuth: [] }],
       params: {
         type: 'object',
         required: ['id'],
@@ -233,6 +252,14 @@ export const registerUserRoutes = (fastify: FastifyInstance, userController: Use
             message: { type: 'string' },
           },
         },
+        401: {
+          description: 'Authentication required',
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
+            message: { type: 'string' },
+          },
+        },
         404: {
           description: 'User not found',
           type: 'object',
@@ -263,10 +290,12 @@ export const registerUserRoutes = (fastify: FastifyInstance, userController: Use
 
   // DELETE /users/:id - Delete a user
   fastify.delete('/users/:id', {
+    preHandler: [authMiddleware.authenticate.bind(authMiddleware)],
     schema: {
       tags: ['Users'],
       summary: 'Delete a user',
       description: 'Soft deletes a user account. The user will be marked as deleted but data is preserved for audit purposes.',
+      security: [{ bearerAuth: [] }],
       params: {
         type: 'object',
         required: ['id'],
@@ -298,6 +327,14 @@ export const registerUserRoutes = (fastify: FastifyInstance, userController: Use
         },
         400: {
           description: 'Validation error',
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
+            message: { type: 'string' },
+          },
+        },
+        401: {
+          description: 'Authentication required',
           type: 'object',
           properties: {
             error: { type: 'string' },

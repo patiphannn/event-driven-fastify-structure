@@ -8,6 +8,7 @@ import { UserUpdatedEvent } from '../../domain/events/UserEvents';
 import { UpdateUserRequest, UpdateUserResponse } from '../../shared/types';
 import { NotFoundError, ConflictError } from '../../shared/errors';
 import { getTraceMetadata } from '../../shared/utils';
+import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
@@ -18,7 +19,7 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
   ) {}
 
   async execute(request: UpdateUserRequest): Promise<UpdateUserResponse> {
-    const tracer = trace.getTracer('user-service');
+    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
     const span = tracer.startSpan('UpdateUserUseCase.execute');
     
     try {
@@ -45,11 +46,11 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
 
         // Update user fields
         if (request.email && request.email !== existingUser.email) {
-          existingUser.updateEmail(request.email);
+          existingUser.updateEmail(request.email, request.updatedBy);
         }
 
         if (request.name && request.name !== existingUser.name) {
-          existingUser.updateName(request.name);
+          existingUser.updateName(request.name, request.updatedBy);
         }
 
         // Copy domain events before saving (as save() will clear them)
