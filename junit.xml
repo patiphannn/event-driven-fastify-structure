@@ -1,72 +1,950 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Integration Tests" tests="8" failures="8" errors="0" time="2.411">
-  <testsuite name="User API Integration Tests" errors="0" failures="8" skipped="0" timestamp="2025-10-02T06:20:18" time="2.277" tests="8">
-    <testcase classname="User API Integration Tests POST /api/users" name="should create a new user and return 202 Accepted" time="0.001">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+<testsuites name="Unit Tests" tests="256" failures="22" errors="0" time="4.7">
+  <testsuite name="DatabaseClient" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:18" time="3.096" tests="14">
+    <testcase classname="DatabaseClient getInstance" name="should return singleton instance" time="0.006">
     </testcase>
-    <testcase classname="User API Integration Tests POST /api/users" name="should return 400 for invalid user data" time="0.001">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient getInstance" name="should create only one PrismaClient instance" time="0.001">
     </testcase>
-    <testcase classname="User API Integration Tests PUT /api/users/:id" name="should update an existing user and return 202 Accepted" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient getInstance" name="should initialize PrismaClient with logging configuration" time="0">
     </testcase>
-    <testcase classname="User API Integration Tests PUT /api/users/:id" name="should return 404 for non-existent user" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient getInstance" name="should create new instance if none exists" time="0.001">
     </testcase>
-    <testcase classname="User API Integration Tests DELETE /api/users/:id" name="should delete an existing user and return 202 Accepted" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient getInstance" name="should return existing instance if already created" time="0">
     </testcase>
-    <testcase classname="User API Integration Tests DELETE /api/users/:id" name="should return 404 for non-existent user" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient disconnect" name="should call $disconnect on instance when instance exists" time="0">
     </testcase>
-    <testcase classname="User API Integration Tests GET /events" name="should return event history" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient disconnect" name="should not throw error when no instance exists" time="0.001">
     </testcase>
-    <testcase classname="User API Integration Tests GET /events" name="should support pagination" time="0">
-      <failure>Error: Could not find a working container runtime strategy
-    at getContainerRuntimeClient (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at GenericContainer.start (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
-    at Function.setup (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/setup.ts:16:21)
-    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:10:15)</failure>
+    <testcase classname="DatabaseClient disconnect" name="should handle disconnection errors gracefully" time="0.007">
     </testcase>
-    <testcase classname="" name="Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." time="0">
-      <failure>{&quot;message&quot;:&quot;&quot;,&quot;stack&quot;:&quot;TypeError: Cannot read properties of undefined (reading &apos;cleanup&apos;)\n    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/integration/user.test.ts:16:19)\n    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)\n    at _callCircusHook (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:978:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:856:7)\n    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)\n    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/index.js:275:16)\n    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/index.js:343:7)&quot;}</failure>
+    <testcase classname="DatabaseClient database operations" name="should provide access to user model" time="0.001">
+    </testcase>
+    <testcase classname="DatabaseClient database operations" name="should provide access to outboxEvent model" time="0">
+    </testcase>
+    <testcase classname="DatabaseClient database operations" name="should provide access to transaction method" time="0.001">
+    </testcase>
+    <testcase classname="DatabaseClient database operations" name="should provide access to connect method" time="0">
+    </testcase>
+    <testcase classname="DatabaseClient database operations" name="should provide access to disconnect method" time="0">
+    </testcase>
+    <testcase classname="DatabaseClient logging configuration" name="should configure PrismaClient with appropriate log levels" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserController" errors="0" failures="12" skipped="0" timestamp="2025-10-02T10:58:18" time="3.371" tests="13">
+    <testcase classname="UserController listUsers" name="should list users with default pagination" time="0.023">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: 200
+
+Number of calls: 0
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:85:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="UserController listUsers" name="should list users with custom pagination" time="0.002">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: 200
+
+Number of calls: 0
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:114:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="UserController createUser" name="should create user successfully" time="0.014">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+- Expected
++ Received
+
+  Object {
++   &quot;createdBy&quot;: Object {
++     &quot;email&quot;: &quot;test@example.com&quot;,
++     &quot;id&quot;: &quot;456&quot;,
++     &quot;name&quot;: &quot;Test User&quot;,
++   },
+    &quot;email&quot;: &quot;newuser@example.com&quot;,
+    &quot;name&quot;: &quot;New User&quot;,
+  },
+
+Number of calls: 1
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:136:45)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="UserController createUser" name="should handle validation errors during creation" time="0.012">
+      <failure>Error: expect(received).rejects.toThrow()
+
+Received promise resolved instead of rejected
+Resolved to value: {&quot;code&quot;: [Function mockConstructor], &quot;header&quot;: [Function mockConstructor], &quot;send&quot;: [Function mockConstructor], &quot;status&quot;: [Function mockConstructor]}
+    at expect (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/expect/build/index.js:2116:15)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:156:13)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController createUser" name="should handle conflict errors during creation" time="0.002">
+      <failure>Error: expect(received).rejects.toThrow()
+
+Received promise resolved instead of rejected
+Resolved to value: {&quot;code&quot;: [Function mockConstructor], &quot;header&quot;: [Function mockConstructor], &quot;send&quot;: [Function mockConstructor], &quot;status&quot;: [Function mockConstructor]}
+    at expect (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/expect/build/index.js:2116:15)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:172:13)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController updateUser" name="should update user successfully" time="0.012">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+- Expected
++ Received
+
+  Object {
+    &quot;email&quot;: &quot;updated@example.com&quot;,
+    &quot;id&quot;: &quot;123&quot;,
+    &quot;name&quot;: &quot;Updated User&quot;,
++   &quot;updatedBy&quot;: Object {
++     &quot;email&quot;: &quot;test@example.com&quot;,
++     &quot;id&quot;: &quot;456&quot;,
++     &quot;name&quot;: &quot;Test User&quot;,
++   },
+  },
+
+Number of calls: 1
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:198:45)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="UserController updateUser" name="should handle not found errors during update" time="0.001">
+      <failure>Error: expect(received).rejects.toThrow()
+
+Received promise resolved instead of rejected
+Resolved to value: {&quot;code&quot;: [Function mockConstructor], &quot;header&quot;: [Function mockConstructor], &quot;send&quot;: [Function mockConstructor], &quot;status&quot;: [Function mockConstructor]}
+    at expect (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/expect/build/index.js:2116:15)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:220:13)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController deleteUser" name="should delete user successfully" time="0.001">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+- Expected
++ Received
+
+  Object {
++   &quot;deletedBy&quot;: Object {
++     &quot;email&quot;: &quot;test@example.com&quot;,
++     &quot;id&quot;: &quot;456&quot;,
++     &quot;name&quot;: &quot;Test User&quot;,
++   },
+    &quot;id&quot;: &quot;123&quot;,
+  },
+
+Number of calls: 1
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:235:45)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="UserController deleteUser" name="should handle not found errors during deletion" time="0.001">
+      <failure>Error: expect(received).rejects.toThrow()
+
+Received promise resolved instead of rejected
+Resolved to value: {&quot;code&quot;: [Function mockConstructor], &quot;header&quot;: [Function mockConstructor], &quot;send&quot;: [Function mockConstructor], &quot;status&quot;: [Function mockConstructor]}
+    at expect (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/expect/build/index.js:2116:15)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:253:13)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController validatePagination" name="should validate and return correct pagination values" time="0.001">
+    </testcase>
+    <testcase classname="UserController validatePagination" name="should handle invalid page numbers" time="0">
+      <failure>ValidationError: Page must be &gt;= 1
+    at UserController.validatePagination (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/presentation/controllers/BaseController.ts:244:13)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:270:46)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController validatePagination" name="should handle limit exceeding maximum" time="0.001">
+      <failure>ValidationError: Limit must be &lt;= 50
+    at UserController.validatePagination (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/presentation/controllers/BaseController.ts:252:13)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:276:46)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="UserController validatePagination" name="should handle invalid limit values" time="0">
+      <failure>ValidationError: Limit must be &gt;= 1
+    at UserController.validatePagination (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/presentation/controllers/BaseController.ts:248:13)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/presentation/UserController.test.ts:282:46)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="UpdateUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:21" time="0.613" tests="7">
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should update a user successfully" time="0.005">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should throw NotFoundError if user does not exist" time="0.223">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should throw ConflictError if email already exists for another user" time="0.001">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should allow updating email to the same email" time="0.029">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should create outbox event with correct data" time="0.001">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should update only name if email is not provided" time="0.001">
+    </testcase>
+    <testcase classname="UpdateUserUseCaseImpl execute" name="should execute within unit of work" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="User Entity - Event Reconstruction Coverage" errors="0" failures="3" skipped="0" timestamp="2025-10-02T10:58:18" time="3.775" tests="15">
+    <testcase classname="User Entity - Event Reconstruction Coverage fromCreationEvent static method" name="should create User from valid UserCreated event" time="0.007">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 1
+Received: 0
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/domain/UserEventReconstructionExtended.test.ts:55:35)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage fromCreationEvent static method" name="should throw error for invalid event type" time="0.007">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage fromCreationEvent static method" name="should handle event with missing email/name gracefully" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage when method - event handling" name="should handle UserCreated event correctly" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage when method - event handling" name="should handle UserUpdated event correctly" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage when method - event handling" name="should handle UserUpdated event with partial data" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage when method - event handling" name="should handle UserDeleted event correctly" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage when method - event handling" name="should throw error for unknown event type" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage private event handler methods" name="should call whenUserCreated for UserCreated events" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage private event handler methods" name="should call whenUserUpdated for UserUpdated events" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage private event handler methods" name="should call whenUserDeleted for UserDeleted events" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage Line 108 coverage - Constructor edge cases" name="should handle User creation with all parameters" time="0.003">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 2025-10-02T10:58:22.558Z
+Received: null
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/domain/UserEventReconstructionExtended.test.ts:281:42)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage Line 108 coverage - Constructor edge cases" name="should handle User creation with null deletedAt" time="0">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage Business logic coverage" name="should validate email when updating" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Event Reconstruction Coverage Business logic coverage" name="should validate name when updating" time="0.008">
+      <failure>Error: expect(received).toThrow(expected)
+
+Expected substring: &quot;Invalid name format&quot;
+Received message:   &quot;Name must be between 2 and 100 characters&quot;
+
+      182 |
+      183 |     if (!validateName(newName)) {
+    &gt; 184 |       throw new ValidationError(&apos;Name must be between 2 and 100 characters&apos;);
+          |             ^
+      185 |     }
+      186 |
+      187 |     const trimmedName = newName.trim();
+
+      at User.updateName (src/domain/entities/User.ts:184:13)
+      at src/tests/domain/UserEventReconstructionExtended.test.ts:312:25
+      at Object.&lt;anonymous&gt; (node_modules/expect/build/index.js:1824:9)
+      at Object.throwingMatcher [as toThrow] (node_modules/expect/build/index.js:2235:93)
+      at Object.&lt;anonymous&gt; (src/tests/domain/UserEventReconstructionExtended.test.ts:313:10)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/domain/UserEventReconstructionExtended.test.ts:313:10)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="RedisClient" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:18" time="3.819" tests="24">
+    <testcase classname="RedisClient getInstance" name="should return singleton instance" time="0.027">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should create only one Redis client instance" time="0">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should initialize Redis client with URL configuration" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should use default Redis URL when REDIS_URL is not set" time="0">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should use environment REDIS_URL when set" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should set up error event listener" time="0">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should set up connect event listener" time="0">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should set up disconnect event listener" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should call connect on client" time="0">
+    </testcase>
+    <testcase classname="RedisClient getInstance" name="should handle connection errors" time="0.009">
+    </testcase>
+    <testcase classname="RedisClient disconnect" name="should call disconnect on client when instance exists" time="0">
+    </testcase>
+    <testcase classname="RedisClient disconnect" name="should not throw error when no instance exists" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient disconnect" name="should handle disconnection errors gracefully" time="0">
+    </testcase>
+    <testcase classname="RedisClient set operation" name="should call set without TTL" time="0">
+    </testcase>
+    <testcase classname="RedisClient set operation" name="should call setEx with TTL" time="0">
+    </testcase>
+    <testcase classname="RedisClient set operation" name="should handle set errors" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient set operation" name="should handle setEx errors" time="0">
+    </testcase>
+    <testcase classname="RedisClient get operation" name="should call get and return value" time="0">
+    </testcase>
+    <testcase classname="RedisClient get operation" name="should return null when key does not exist" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient get operation" name="should handle get errors" time="0">
+    </testcase>
+    <testcase classname="RedisClient del operation" name="should call del" time="0.006">
+    </testcase>
+    <testcase classname="RedisClient del operation" name="should handle del errors" time="0.001">
+    </testcase>
+    <testcase classname="RedisClient static method integration" name="should work with get, set, del in sequence" time="0.005">
+    </testcase>
+    <testcase classname="RedisClient static method integration" name="should maintain singleton across static method calls" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="User Entity - Extended Methods" errors="0" failures="1" skipped="0" timestamp="2025-10-02T10:58:18" time="3.788" tests="26">
+    <testcase classname="User Entity - Extended Methods updateName" name="should update name and generate event" time="0.01">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateName" name="should not generate event if name unchanged" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateName" name="should trim whitespace from name" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateName" name="should throw ValidationError for invalid name" time="0.026">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateName" name="should throw ValidationError when updating deleted user" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateName" name="should work without updatedBy parameter" time="0.005">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should update email and generate event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should normalize email to lowercase" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should trim whitespace from email" time="0">
+      <failure>ValidationError: Invalid email format
+    at User.updateEmail (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/domain/entities/User.ts:231:13)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/domain/UserExtended.test.ts:120:12)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should not generate event if email unchanged" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should throw ValidationError for invalid email" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should throw ValidationError when updating deleted user" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods updateEmail" name="should work without updatedBy parameter" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods delete" name="should delete user and generate event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods delete" name="should not generate event if already deleted" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods delete" name="should work without deletedBy parameter" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Business Rules Validation" name="should validate email format correctly" time="0.011">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Business Rules Validation" name="should validate name length correctly" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Business Rules Validation" name="should accept valid email formats" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Business Rules Validation" name="should accept valid name formats" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Domain Events" name="should include trace metadata in generated events" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Domain Events" name="should track event sequence correctly" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods Domain Events" name="should clear events when requested" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods State Consistency" name="should maintain consistent state after multiple operations" time="0">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods State Consistency" name="should prevent any updates after deletion" time="0.001">
+    </testcase>
+    <testcase classname="User Entity - Extended Methods State Consistency" name="should handle concurrent-like operations gracefully" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="PrismaEventStore" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.433" tests="6">
+    <testcase classname="PrismaEventStore saveEvents" name="should save domain events with version control" time="0.002">
+    </testcase>
+    <testcase classname="PrismaEventStore saveEvents" name="should handle empty events array" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore saveEvents" name="should throw error for version conflict" time="0.011">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should retrieve events for an aggregate" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should return empty array when no events found" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore getEvents" name="should filter by version when provided" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="PrismaEventStore - Extended Coverage" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:18" time="3.889" tests="16">
+    <testcase classname="PrismaEventStore - Extended Coverage extractUpdatedBy private method coverage" name="should extract updatedBy when present" time="0.003">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage extractUpdatedBy private method coverage" name="should extract deletedBy when updatedBy not present" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage extractUpdatedBy private method coverage" name="should return null when neither updatedBy nor deletedBy present" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getAllEvents" name="should get all events without position filter" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getAllEvents" name="should get all events with position filter" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getAllEvents" name="should handle database errors in getAllEvents" time="0.009">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getEventsByType" name="should get events by type without position filter" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getEventsByType" name="should get events by type with position filter and max count" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getEventsByType" name="should handle database errors in getEventsByType" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getSnapshot" name="should return null when no events exist for aggregate" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getSnapshot" name="should return snapshot with events and version when events exist" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage getSnapshot" name="should handle database errors in getSnapshot" time="0.001">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage saveEvents edge cases" name="should handle empty events array early return" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage saveEvents edge cases" name="should handle concurrency conflict in transaction" time="0.006">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage saveEvents edge cases" name="should save events successfully when versions match" time="0">
+    </testcase>
+    <testcase classname="PrismaEventStore - Extended Coverage saveEvents edge cases" name="should handle database transaction errors" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="AggregateRoot - Event Reconstruction Coverage" errors="0" failures="1" skipped="0" timestamp="2025-10-02T10:58:18" time="3.923" tests="9">
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should use fromCreationEvent when available (User case)" time="0.011">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should fallback to constructor with event data when no fromCreationEvent" time="0.001">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should handle fallback constructor with identifier field" time="0.001">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: &quot;test-identifier&quot;
+Received: &quot;&quot;
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/domain/AggregateRootExtended.test.ts:138:31)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should use minimal constructor when event data is empty" time="0.001">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should use last resort constructor when complex constructor fails" time="0">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should apply all events in sequence when using fromCreationEvent" time="0">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should apply all events when not using fromCreationEvent" time="0.001">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should handle empty events array" time="0.013">
+    </testcase>
+    <testcase classname="AggregateRoot - Event Reconstruction Coverage replayEvents static method" name="should handle constructor with default parameters" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="User Entity" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:18" time="3.901" tests="17">
+    <testcase classname="User Entity constructor" name="should create a user with valid data" time="0.004">
+    </testcase>
+    <testcase classname="User Entity constructor" name="should throw ValidationError for invalid email" time="0.018">
+    </testcase>
+    <testcase classname="User Entity constructor" name="should throw ValidationError for invalid name" time="0.001">
+    </testcase>
+    <testcase classname="User Entity create static method" name="should create a user and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity create static method" name="should trim and lowercase email" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should update name and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should not add event if name is the same" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should throw ValidationError for invalid name" time="0">
+    </testcase>
+    <testcase classname="User Entity updateName" name="should throw ValidationError when user is deleted" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should update email and add domain event" time="0">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should not add event if email is the same" time="0">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should throw ValidationError for invalid email" time="0.001">
+    </testcase>
+    <testcase classname="User Entity updateEmail" name="should throw ValidationError when user is deleted" time="0">
+    </testcase>
+    <testcase classname="User Entity delete" name="should soft delete user and add domain event" time="0.001">
+    </testcase>
+    <testcase classname="User Entity delete" name="should not add event if already deleted" time="0.001">
+    </testcase>
+    <testcase classname="User Entity domain events" name="should clear domain events" time="0.001">
+    </testcase>
+    <testcase classname="User Entity event sourcing" name="should replay events correctly" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="DeleteUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.169" tests="6">
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should delete a user successfully" time="0.002">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should throw NotFoundError if user does not exist" time="0.011">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should throw NotFoundError if user is already deleted" time="0">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should create outbox event with correct data" time="0.001">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should set deletedAt timestamp when deleting" time="0">
+    </testcase>
+    <testcase classname="DeleteUserUseCaseImpl execute" name="should execute within unit of work" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthMiddleware" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:18" time="3.946" tests="10">
+    <testcase classname="AuthMiddleware extractBearerToken" name="should extract token from Authorization header" time="0.005">
+    </testcase>
+    <testcase classname="AuthMiddleware extractBearerToken" name="should return null for missing Authorization header" time="0">
+    </testcase>
+    <testcase classname="AuthMiddleware extractBearerToken" name="should return null for invalid Authorization format" time="0">
+    </testcase>
+    <testcase classname="AuthMiddleware authenticate" name="should authenticate valid token successfully" time="0.002">
+    </testcase>
+    <testcase classname="AuthMiddleware authenticate" name="should handle missing token when auth is required" time="0.016">
+    </testcase>
+    <testcase classname="AuthMiddleware authenticate" name="should handle invalid token" time="0.014">
+    </testcase>
+    <testcase classname="AuthMiddleware getUserInfo" name="should get user info from database when not in cache" time="0.001">
+    </testcase>
+    <testcase classname="AuthMiddleware getUserInfo" name="should handle Redis errors gracefully" time="0">
+    </testcase>
+    <testcase classname="AuthMiddleware getUserInfo" name="should return null when database user not found" time="0.001">
+    </testcase>
+    <testcase classname="AuthMiddleware getUserInfo" name="should fallback to JWT payload when database error occurs" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="ErrorHandler" errors="0" failures="3" skipped="0" timestamp="2025-10-02T10:58:18" time="3.952" tests="12">
+    <testcase classname="ErrorHandler handle" name="should handle ValidationError correctly" time="0.021">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: ObjectContaining {&quot;error&quot;: ObjectContaining {&quot;code&quot;: &quot;common.validation_error&quot;, &quot;message&quot;: &quot;Invalid input&quot;}, &quot;success&quot;: false}
+Received: {&quot;error&quot;: {&quot;code&quot;: &quot;common.invalid_request&quot;, &quot;details&quot;: {&quot;field&quot;: &quot;email&quot;}, &quot;message&quot;: &quot;Invalid input&quot;, &quot;traceId&quot;: &quot;unknown&quot;}, &quot;path&quot;: &quot;/test&quot;, &quot;success&quot;: false, &quot;timestamp&quot;: &quot;2025-10-02T10:58:22.679Z&quot;}
+
+Number of calls: 1
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/ErrorHandler.test.ts:32:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle UnauthorizedError correctly" time="0.001">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle ForbiddenError correctly" time="0">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle NotFoundError correctly" time="0.01">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle ConflictError correctly" time="0.001">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle generic Error as internal server error" time="0.014">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle validation-related generic error" time="0.001">
+      <failure>Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+Expected: ObjectContaining {&quot;error&quot;: ObjectContaining {&quot;code&quot;: &quot;common.validation_error&quot;}, &quot;success&quot;: false}
+Received: {&quot;error&quot;: {&quot;code&quot;: &quot;common.invalid_request&quot;, &quot;details&quot;: {&quot;originalError&quot;: &quot;Error&quot;}, &quot;message&quot;: &quot;validation failed for field&quot;, &quot;traceId&quot;: &quot;unknown&quot;}, &quot;path&quot;: &quot;/test&quot;, &quot;success&quot;: false, &quot;timestamp&quot;: &quot;2025-10-02T10:58:22.718Z&quot;}
+
+Number of calls: 1
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/ErrorHandler.test.ts:107:30)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should include context in error response" time="0">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should include request information in error response" time="0.001">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle span recording" time="0">
+      <failure>TypeError: span.spanContext is not a function
+    at ErrorHandler.spanContext [as getTraceId] (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/shared/utils/ErrorHandler.ts:159:19)
+    at ErrorHandler.getTraceId [as handle] (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/shared/utils/ErrorHandler.ts:43:26)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/ErrorHandler.test.ts:152:26)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle null/undefined errors" time="0.01">
+    </testcase>
+    <testcase classname="ErrorHandler handle" name="should handle string errors" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Shared Utils" errors="0" failures="2" skipped="0" timestamp="2025-10-02T10:58:18" time="4" tests="12">
+    <testcase classname="Shared Utils validateEmail" name="should validate correct email formats" time="0.005">
+    </testcase>
+    <testcase classname="Shared Utils validateEmail" name="should reject invalid email formats" time="0.002">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true
+    at /Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/UtilsExtended.test.ts:42:38
+    at Array.forEach (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/UtilsExtended.test.ts:41:21)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="Shared Utils validateEmail" name="should handle edge cases" time="0">
+    </testcase>
+    <testcase classname="Shared Utils validateName" name="should validate correct name formats" time="0">
+    </testcase>
+    <testcase classname="Shared Utils validateName" name="should reject invalid name formats" time="0.001">
+    </testcase>
+    <testcase classname="Shared Utils validateName" name="should accept names with numbers and special characters" time="0">
+    </testcase>
+    <testcase classname="Shared Utils validateName" name="should handle edge cases" time="0">
+      <failure>TypeError: Cannot read properties of null (reading &apos;trim&apos;)
+    at trim (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/shared/utils/index.ts:57:15)
+    at Object.&lt;anonymous&gt; (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/src/tests/shared/UtilsExtended.test.ts:93:26)
+    at Promise.finally.completed (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1559:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1499:10)
+    at _callCircusTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1009:40)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at _runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:949:3)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:839:13)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at _runTestsForDescribeBlock (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:829:11)
+    at run (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:757:3)
+    at runAndTransformResultsToJestFormat (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/jestAdapterInit.js:1920:21)
+    at jestAdapter (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/patiphanchaiya/Documents/event-driven-fastify-structure/node_modules/jest-runner/build/testWorker.js:497:12)</failure>
+    </testcase>
+    <testcase classname="Shared Utils validateName" name="should trim whitespace before validation" time="0">
+    </testcase>
+    <testcase classname="Shared Utils getTraceMetadata" name="should return undefined when no active span" time="0.001">
+    </testcase>
+    <testcase classname="Shared Utils getTraceMetadata" name="should return trace metadata when active span exists" time="0.002">
+    </testcase>
+    <testcase classname="Shared Utils getTraceMetadata" name="should extract trace ID from span context" time="0">
+    </testcase>
+    <testcase classname="Shared Utils getTraceMetadata" name="should extract span ID from span context" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Additional Error Types" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.147" tests="17">
+    <testcase classname="Additional Error Types UnprocessableEntityError" name="should create error with default message" time="0.003">
+    </testcase>
+    <testcase classname="Additional Error Types UnprocessableEntityError" name="should create error with custom message and context" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types BadGatewayError" name="should create error with default message" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types BadGatewayError" name="should create error with custom message" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types ServiceUnavailableError" name="should create error with default message" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types ServiceUnavailableError" name="should create error with custom context" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types GatewayTimeoutError" name="should create error with default message" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types GatewayTimeoutError" name="should create error with timeout context" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create AuthenticationError as UnauthorizedError" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create AuthorizationError as ForbiddenError" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create InfrastructureError as InternalServerError" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create DatabaseError as InternalServerError" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create ExternalServiceError as BadGatewayError" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types Legacy Error Aliases" name="should create DomainError as ValidationError" time="0">
+    </testcase>
+    <testcase classname="Additional Error Types Type Guards" name="should identify operational errors correctly" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types Type Guards" name="should identify BaseError instances correctly" time="0.001">
+    </testcase>
+    <testcase classname="Additional Error Types Type Guards" name="should handle edge cases in type guards" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreateUserUseCaseImpl" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.18" tests="4">
+    <testcase classname="CreateUserUseCaseImpl execute" name="should create a user successfully" time="0.002">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should throw ConflictError if user already exists" time="0.013">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should create outbox event with correct data" time="0">
+    </testcase>
+    <testcase classname="CreateUserUseCaseImpl execute" name="should execute within unit of work" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="OutboxEvent Entity" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.09" tests="5">
+    <testcase classname="OutboxEvent Entity create static method" name="should create an outbox event with required fields" time="0.001">
+    </testcase>
+    <testcase classname="OutboxEvent Entity create static method" name="should create an outbox event without metadata" time="0">
+    </testcase>
+    <testcase classname="OutboxEvent Entity create static method" name="should generate unique IDs for different events" time="0">
+    </testcase>
+    <testcase classname="OutboxEvent Entity constructor" name="should create an outbox event with all fields" time="0">
+    </testcase>
+    <testcase classname="OutboxEvent Entity constructor" name="should create an outbox event with default values" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="EventSourcedUserRepository" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.25" tests="8">
+    <testcase classname="EventSourcedUserRepository save" name="should save a new user with events" time="0.003">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository save" name="should throw ConflictError for duplicate email" time="0.008">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findById" name="should return a user when found" time="0.001">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findById" name="should return null when user not found" time="0">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findByEmail" name="should return a user when found by email" time="0.003">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findByEmail" name="should return null when user not found by email" time="0">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findMany" name="should return paginated users with event sourcing" time="0">
+    </testcase>
+    <testcase classname="EventSourcedUserRepository findMany" name="should handle pagination correctly" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="PrismaUnitOfWork" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.215" tests="5">
+    <testcase classname="PrismaUnitOfWork execute" name="should execute function within transaction" time="0.001">
+    </testcase>
+    <testcase classname="PrismaUnitOfWork execute" name="should handle transaction failure" time="0.007">
+    </testcase>
+    <testcase classname="PrismaUnitOfWork execute" name="should handle complex return types" time="0.001">
+    </testcase>
+    <testcase classname="PrismaUnitOfWork execute" name="should handle async function execution" time="0.01">
+    </testcase>
+    <testcase classname="PrismaUnitOfWork execute" name="should propagate transaction rollback on function error" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="CacheService" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.12" tests="17">
+    <testcase classname="CacheService get" name="should get value from cache" time="0.002">
+    </testcase>
+    <testcase classname="CacheService get" name="should return null for non-existent key" time="0">
+    </testcase>
+    <testcase classname="CacheService get" name="should handle Redis errors gracefully" time="0.001">
+    </testcase>
+    <testcase classname="CacheService get" name="should handle JSON parse errors" time="0">
+    </testcase>
+    <testcase classname="CacheService set" name="should set value in cache with custom TTL" time="0.001">
+    </testcase>
+    <testcase classname="CacheService set" name="should set value with default TTL when no TTL provided" time="0">
+    </testcase>
+    <testcase classname="CacheService set" name="should handle Redis set errors gracefully" time="0">
+    </testcase>
+    <testcase classname="CacheService del" name="should delete key from cache" time="0">
+    </testcase>
+    <testcase classname="CacheService del" name="should handle Redis delete errors gracefully" time="0.001">
+    </testcase>
+    <testcase classname="CacheService delPattern" name="should delete keys by pattern" time="0">
+    </testcase>
+    <testcase classname="CacheService delPattern" name="should handle empty key list gracefully" time="0.001">
+    </testcase>
+    <testcase classname="CacheService delPattern" name="should handle pattern deletion errors gracefully" time="0">
+    </testcase>
+    <testcase classname="CacheService generateKey" name="should generate key with prefix and parts" time="0">
+    </testcase>
+    <testcase classname="CacheService generateKey" name="should generate key with single part" time="0">
+    </testcase>
+    <testcase classname="CacheService generateKey" name="should generate key with multiple parts" time="0">
+    </testcase>
+    <testcase classname="CacheService generateUserListKey" name="should generate user list key with page and limit" time="0">
+    </testcase>
+    <testcase classname="CacheService generateUserListKey" name="should generate user list key with different page and limit" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="FlexibleAggregateRoot (AggregateRoot flexibility tests)" errors="0" failures="0" skipped="0" timestamp="2025-10-02T10:58:22" time="0.152" tests="13">
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Basic AggregateRoot functionality" name="should create an aggregate with id and timestamps" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Basic AggregateRoot functionality" name="should handle custom creation and update timestamps" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should add domain events and increment version" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should update timestamp when adding domain events" time="0.011">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should clear domain events" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Domain Events handling" name="should handle multiple domain events" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should replay events to rebuild aggregate state" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should handle empty event stream" time="0.009">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Event replay functionality" name="should handle single creation event" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Immutability and encapsulation" name="should return readonly domain events" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Immutability and encapsulation" name="should maintain internal state consistency" time="0">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Edge cases and error handling" name="should handle rapid successive updates" time="0.001">
+    </testcase>
+    <testcase classname="FlexibleAggregateRoot (AggregateRoot flexibility tests) Edge cases and error handling" name="should maintain correct event ordering" time="0">
     </testcase>
   </testsuite>
 </testsuites>
