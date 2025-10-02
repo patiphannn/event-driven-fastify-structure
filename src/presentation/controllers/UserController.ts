@@ -1,114 +1,123 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { BaseController } from './BaseController';
 import { CreateUserUseCase } from '../../application/ports/CreateUserUseCase';
 import { UpdateUserUseCase } from '../../application/ports/UpdateUserUseCase';
 import { DeleteUserUseCase } from '../../application/ports/DeleteUserUseCase';
 import { ListUsersUseCase } from '../../application/usecases/ListUsersUseCaseImpl';
-import { CreateUserRequest, UpdateUserRequest, DeleteUserRequest, ListUsersRequest } from '../../shared/types';
-import { ValidationError, ConflictError, NotFoundError } from '../../shared/errors';
+import { ValidationError, NotFoundError, ConflictError } from '../../shared/errors';
 import { CONFIG } from '../../shared/config';
-import { trace } from '@opentelemetry/api';
-import pino from 'pino';
+import type { CreateUserRequest, UpdateUserRequest, DeleteUserRequest, ListUsersRequest } from '../../shared/types';
 
-const logger = pino({ name: 'UserController' });
-
-export class UserController {
+/**
+ * UserController following the Clean Architecture standards
+ * This controller handles all user-related HTTP operations
+ */
+export class UserController extends BaseController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly listUsersUseCase: ListUsersUseCase
-  ) {}
+  ) {
+    super(CONFIG.SERVICE_NAME);
+  }
 
-  async listUsers(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
-    const span = tracer.startSpan('UserController.listUsers');
+  /**
+   * List users with pagination
+   * Demonstrates proper pagination handling and response formatting
+   */
+  async listUsers(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
+    const span = this.startSpan('listUsers');
 
     try {
+      // Extract and validate query parameters
       const query = request.query as any;
       const page = query.page ? parseInt(query.page) : 1;
       const limit = query.limit ? parseInt(query.limit) : CONFIG.PAGINATION.DEFAULT_LIMIT;
 
-      // Validation
-      if (page < 1 || limit < 1 || limit > CONFIG.PAGINATION.MAX_LIMIT) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'error.message': 'Invalid page or limit parameters',
-        });
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: 'Page must be >= 1 and limit must be between 1 and 100',
-        });
-      }
-
-      span.setAttributes({
-        'http.method': request.method,
-        'http.url': request.url,
-        'users.list.page': page,
-        'users.list.limit': limit,
-      });
-
-      const result = await this.listUsersUseCase.execute({ page, limit });
-
-      span.setAttributes({
-        'users.list.total': result.pagination.total,
-        'users.list.returned': result.users.length,
-        'http.status_code': 200,
-      });
-
-      logger.info({ 
+      // Validate pagination parameters
+      const { page: validPage, limit: validLimit } = this.validatePagination(
         page, 
         limit, 
+        CONFIG.PAGINATION.MAX_LIMIT
+      );
+
+      // Add request attributes to span
+      this.addRequestAttributes(span, request.method, request.url, {
+        'users.list.page': validPage,
+        'users.list.limit': validLimit,
+      });
+
+      // Log operation start
+      this.logOperationStart('listUsers', { page: validPage, limit: validLimit });
+
+      // Execute use case
+      const result = await this.listUsersUseCase.execute({ 
+        page: validPage, 
+        limit: validLimit 
+      });
+
+      // Calculate pagination metadata
+      const pagination = this.calculatePagination(validPage, validLimit, result.pagination.total);
+
+      // Add success attributes
+      this.addSuccessAttributes(span, 200, {
+        'users.list.total': result.pagination.total,
+        'users.list.returned': result.users.length,
+      });
+
+      // Log success
+      this.logOperationSuccess('listUsers', { 
         total: result.pagination.total, 
         returned: result.users.length 
-      }, 'Users list retrieved');
+      });
 
-      return reply.status(200).send(result);
+      // Return paginated response
+      return this.paginatedResponse(reply, result.users, pagination);
+
     } catch (error) {
-      span.recordException(error as Error);
-      span.setAttributes({
-        'error.type': 'internal_error',
-        'http.status_code': 500,
-      });
-      logger.error(error, 'Internal error in users list');
-      return reply.status(500).send({
-        error: 'Internal Server Error',
-        message: 'An unexpected error occurred',
-      });
+      return this.errorHandler.handle(error, request, reply, span);
     } finally {
       span.end();
     }
   }
 
-  async createUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
-    const span = tracer.startSpan('UserController.createUser');
+  /**
+   * Create a new user
+   * Demonstrates async operation with 202 Accepted response
+   */
+  async createUser(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
+    const span = this.startSpan('createUser');
 
     try {
+      // Extract and validate request body
       const { email, name } = request.body as CreateUserRequest;
       
-      // Get authenticated user from optional auth middleware
+      // Basic validation (additional validation in use case)
+      if (!email || !name) {
+        throw new ValidationError('Email and name are required', { 
+          missingFields: { email: !email, name: !name } 
+        });
+      }
+
+      // Get authenticated user from middleware
       const authenticatedUser = (request as any).user || null;
 
-      span.setAttributes({
-        'http.method': request.method,
-        'http.url': request.url,
+      // Add request attributes to span
+      this.addRequestAttributes(span, request.method, request.url, {
         'user.email': email,
         'user.name': name,
         'user.hasCreator': !!authenticatedUser,
       });
 
-      // Basic validation
-      if (!email || !name) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'error.message': 'Email and name are required',
-        });
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: 'Email and name are required',
-        });
-      }
+      // Log operation start
+      this.logOperationStart('createUser', { 
+        email, 
+        name, 
+        createdBy: authenticatedUser?.email || 'anonymous' 
+      });
 
+      // Execute use case
       const result = await this.createUserUseCase.execute({ 
         email, 
         name,
@@ -119,102 +128,72 @@ export class UserController {
         } : undefined
       });
 
-      span.setAttributes({
+      // Add success attributes
+      this.addSuccessAttributes(span, 202, {
         'user.id': result.id,
-        'http.status_code': 202,
       });
 
-      logger.info({ 
+      // Log success
+      this.logOperationSuccess('createUser', { 
         userId: result.id, 
         email, 
-        name, 
-        createdBy: authenticatedUser?.email || 'anonymous' 
-      }, 'User creation initiated');
+        name 
+      });
 
-      return reply.status(202).send(result);
+      // Return accepted response (async operation)
+      return this.acceptedResponse(reply, result, {
+        message: 'User creation initiated',
+        estimatedCompletionTime: '< 1 second'
+      });
+
     } catch (error) {
-      span.recordException(error as Error);
-      
-      if (error instanceof ValidationError) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'http.status_code': 400,
-        });
-        logger.warn({ error: error.message }, 'Validation error in user creation');
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: error.message,
-        });
-      }
-
-      if (error instanceof ConflictError) {
-        span.setAttributes({
-          'error.type': 'conflict_error',
-          'http.status_code': 409,
-        });
-        logger.warn({ error: error.message }, 'Conflict error in user creation');
-        return reply.status(409).send({
-          error: 'Conflict Error',
-          message: error.message,
-        });
-      }
-
-      span.setAttributes({
-        'error.type': 'internal_error',
-        'http.status_code': 500,
-      });
-      logger.error(error, 'Internal error in user creation');
-      return reply.status(500).send({
-        error: 'Internal Server Error',
-        message: 'An unexpected error occurred',
-      });
+      return this.errorHandler.handle(error, request, reply, span);
     } finally {
       span.end();
     }
   }
 
-  async updateUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
-    const span = tracer.startSpan('UserController.updateUser');
+  /**
+   * Update an existing user
+   * Demonstrates proper error handling and validation
+   */
+  async updateUser(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
+    const span = this.startSpan('updateUser');
 
     try {
+      // Extract parameters and body
       const { id } = request.params as { id: string };
       const { email, name } = request.body as Omit<UpdateUserRequest, 'id'>;
-      const currentUser = (request as any).user; // User info from auth middleware
+      const currentUser = (request as any).user;
 
-      span.setAttributes({
-        'http.method': request.method,
-        'http.url': request.url,
+      // Basic validation
+      if (!id) {
+        throw new ValidationError('User ID is required', { parameter: 'id' });
+      }
+
+      if (!email && !name) {
+        throw new ValidationError('At least one field (email or name) must be provided', {
+          providedFields: { email: !!email, name: !!name }
+        });
+      }
+
+      // Add request attributes to span
+      this.addRequestAttributes(span, request.method, request.url, {
         'user.id': id,
         'user.email': email || 'not_updated',
         'user.name': name || 'not_updated',
         'updated_by.id': currentUser?.id || 'unknown',
-        'updated_by.email': currentUser?.email || 'unknown',
       });
 
-      // Basic validation
-      if (!id) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'error.message': 'User ID is required',
-        });
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: 'User ID is required',
-        });
-      }
+      // Log operation start
+      this.logOperationStart('updateUser', { 
+        userId: id, 
+        email: email || 'not_updated',
+        name: name || 'not_updated',
+        updatedBy: currentUser?.email || 'unknown'
+      });
 
-      if (!email && !name) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'error.message': 'At least one field (email or name) must be provided',
-        });
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: 'At least one field (email or name) must be provided',
-        });
-      }
-
+      // Execute use case
       const result = await this.updateUserUseCase.execute({ 
         id, 
         email, 
@@ -222,156 +201,84 @@ export class UserController {
         updatedBy: currentUser 
       });
 
-      span.setAttributes({
+      // Add success attributes
+      this.addSuccessAttributes(span, 200, {
         'user.id': result.id,
         'user.version': result.version,
-        'http.status_code': 200,
       });
 
-      logger.info({ 
+      // Log success
+      this.logOperationSuccess('updateUser', { 
         userId: result.id, 
-        version: result.version,
-        email: email || 'not_updated',
-        name: name || 'not_updated',
-        updatedBy: currentUser
-      }, 'User updated successfully');
+        version: result.version 
+      });
 
-      return reply.status(200).send(result);
+      // Return success response
+      return this.successResponse(reply, result, 200, {
+        version: result.version.toString()
+      });
+
     } catch (error) {
-      span.recordException(error as Error);
-      
-      if (error instanceof ValidationError) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'http.status_code': 400,
-        });
-        logger.warn({ error: error.message }, 'Validation error in user update');
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: error.message,
-        });
-      }
-
-      if (error instanceof NotFoundError) {
-        span.setAttributes({
-          'error.type': 'not_found_error',
-          'http.status_code': 404,
-        });
-        logger.warn({ error: error.message }, 'User not found in update');
-        return reply.status(404).send({
-          error: 'Not Found Error',
-          message: error.message,
-        });
-      }
-
-      if (error instanceof ConflictError) {
-        span.setAttributes({
-          'error.type': 'conflict_error',
-          'http.status_code': 409,
-        });
-        logger.warn({ error: error.message }, 'Conflict error in user update');
-        return reply.status(409).send({
-          error: 'Conflict Error',
-          message: error.message,
-        });
-      }
-
-      span.setAttributes({
-        'error.type': 'internal_error',
-        'http.status_code': 500,
-      });
-      logger.error(error, 'Internal error in user update');
-      return reply.status(500).send({
-        error: 'Internal Server Error',
-        message: 'An unexpected error occurred',
-      });
+      return this.errorHandler.handle(error, request, reply, span);
     } finally {
       span.end();
     }
   }
 
-  async deleteUser(request: FastifyRequest, reply: FastifyReply) {
-    const tracer = trace.getTracer(CONFIG.SERVICE_NAME);
-    const span = tracer.startSpan('UserController.deleteUser');
+  /**
+   * Delete a user (soft delete)
+   * Demonstrates proper deletion handling
+   */
+  async deleteUser(request: FastifyRequest, reply: FastifyReply): Promise<FastifyReply> {
+    const span = this.startSpan('deleteUser');
 
     try {
+      // Extract parameters
       const { id } = request.params as { id: string };
-      const currentUser = (request as any).user; // User info from auth middleware
-
-      span.setAttributes({
-        'http.method': request.method,
-        'http.url': request.url,
-        'user.id': id,
-        'deleted_by.id': currentUser?.id || 'unknown',
-        'deleted_by.email': currentUser?.email || 'unknown',
-      });
+      const currentUser = (request as any).user;
 
       // Basic validation
       if (!id) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'error.message': 'User ID is required',
-        });
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: 'User ID is required',
-        });
+        throw new ValidationError('User ID is required', { parameter: 'id' });
       }
 
+      // Add request attributes to span
+      this.addRequestAttributes(span, request.method, request.url, {
+        'user.id': id,
+        'deleted_by.id': currentUser?.id || 'unknown',
+      });
+
+      // Log operation start
+      this.logOperationStart('deleteUser', { 
+        userId: id, 
+        deletedBy: currentUser?.email || 'unknown'
+      });
+
+      // Execute use case
       const result = await this.deleteUserUseCase.execute({ 
         id, 
         deletedBy: currentUser 
       });
 
-      span.setAttributes({
+      // Add success attributes
+      this.addSuccessAttributes(span, 200, {
         'user.id': result.id,
         'user.version': result.version,
-        'http.status_code': 200,
       });
 
-      logger.info({ 
+      // Log success
+      this.logOperationSuccess('deleteUser', { 
         userId: result.id, 
-        version: result.version,
-        deletedBy: currentUser
-      }, 'User deleted successfully');
+        version: result.version 
+      });
 
-      return reply.status(200).send(result);
+      // Return success response
+      return this.successResponse(reply, result, 200, {
+        version: result.version.toString()
+      });
+
     } catch (error) {
-      span.recordException(error as Error);
-      
-      if (error instanceof ValidationError) {
-        span.setAttributes({
-          'error.type': 'validation_error',
-          'http.status_code': 400,
-        });
-        logger.warn({ error: error.message }, 'Validation error in user deletion');
-        return reply.status(400).send({
-          error: 'Validation Error',
-          message: error.message,
-        });
-      }
-
-      if (error instanceof NotFoundError) {
-        span.setAttributes({
-          'error.type': 'not_found_error',
-          'http.status_code': 404,
-        });
-        logger.warn({ error: error.message }, 'User not found in deletion');
-        return reply.status(404).send({
-          error: 'Not Found Error',
-          message: error.message,
-        });
-      }
-
-      span.setAttributes({
-        'error.type': 'internal_error',
-        'http.status_code': 500,
-      });
-      logger.error(error, 'Internal error in user deletion');
-      return reply.status(500).send({
-        error: 'Internal Server Error',
-        message: 'An unexpected error occurred',
-      });
+      return this.errorHandler.handle(error, request, reply, span);
     } finally {
       span.end();
     }

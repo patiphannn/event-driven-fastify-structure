@@ -5,7 +5,7 @@ import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
 import { User } from '../../domain/entities/User';
 import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { DeleteUserRequest, DeleteUserResponse } from '../../shared/types';
-import { NotFoundError } from '../../shared/errors';
+import { NotFoundError, ValidationError } from '../../shared/errors';
 import { getTraceMetadata } from '../../shared/utils';
 import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';

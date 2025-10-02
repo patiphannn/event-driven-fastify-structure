@@ -18,7 +18,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --ci --watchAll=false",
-    "test:integration:ci": "jest --config jest.integration.config.js --ci --watchAll=false"
+    "test:integration:ci": "jest --config jest.integration.config.js --ci --watchAll=false",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "type-check": "tsc --noEmit",
+    "quality-check": "npm run lint && npm run type-check && npm run test:coverage"
   },
   "keywords": [
     "microservice",
@@ -59,13 +64,21 @@
     "@types/node": "^24.1.0",
     "@types/redis": "^4.0.11",
     "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
     "jest": "^30.0.5",
     "jest-junit": "^16.0.0",
     "nodemon": "^3.1.10",
+    "prettier": "^3.2.5",
     "supertest": "^7.1.4",
     "testcontainers": "^11.4.0",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

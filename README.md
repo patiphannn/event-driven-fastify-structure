@@ -1,6 +1,22 @@
 # User Service - Clean Architecture Microservice
 
-A Node.js microservice built with Clean Architecture principles for user creation, featuring the Outbox Pattern for transactional atomicity, distributed tracing with OpenTelemetry, and comprehensive observability.
+A Node.js microservice built with Clean Architecture principles, featuring **standardized error handling**, **response formats**, and **coding guidelines** for consistent development across team members.
+
+## 🎯 Key Features
+
+- **Clean Architecture** with clear layer separation and dependency inversion
+- **Standardized Error Handling** with consistent response formats
+- **Code Quality Enforcement** with ESLint custom rules and VS Code snippets
+- **OpenTelemetry Tracing** for comprehensive observability
+- **Outbox Pattern** for transactional atomicity between database operations and event publishing
+- **Developer-Friendly** with templates, snippets, and comprehensive documentation
+- **Type Safety** with full TypeScript implementation
+
+## 📚 Documentation
+
+- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Comprehensive coding standards and best practices
+- **[DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md)** - Quick start guide for junior developers
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development environment setup
 
 ## 🏗️ Architecture
 

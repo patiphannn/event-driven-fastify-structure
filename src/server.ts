@@ -9,6 +9,8 @@ import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import pino from 'pino';
+import { setupGlobalErrorHandling } from './shared/utils/ErrorHandler';
+import { ErrorHandler } from './shared/utils/ErrorHandler';
 import { DatabaseClient } from './infrastructure/database/DatabaseClient';
 import { RedisClient } from './infrastructure/cache/RedisClient';
 import { PrismaOutboxRepository } from './infrastructure/repositories/PrismaOutboxRepository';
@@ -21,13 +23,11 @@ import { DeleteUserUseCaseImpl } from './application/usecases/DeleteUserUseCaseI
 import { ListUsersUseCaseImpl } from './application/usecases/ListUsersUseCaseImpl';
 import { CacheService } from './infrastructure/cache/CacheService';
 import { UserController } from './presentation/controllers/UserController';
-import { AuthController } from './presentation/controllers/AuthController';
-import { EventHistoryController } from './presentation/controllers/EventHistoryController';
-import { AuthMiddleware } from './presentation/middleware/AuthMiddleware';
 import { registerUserRoutes } from './presentation/routes/userRoutes';
-import { registerAuthRoutes } from './presentation/routes/authRoutes';
-import { registerEventHistoryRoutes } from './presentation/routes/eventHistoryRoutes';
 import { swaggerOptions, swaggerUiOptions } from './infrastructure/swagger/SwaggerConfig';
+
+// Setup global error handling
+setupGlobalErrorHandling();
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
@@ -94,16 +94,33 @@ async function createApp() {
     cacheService
   );
 
-  // Initialize controllers and middleware
-  const authController = new AuthController();
-  const authMiddleware = new AuthMiddleware();
+  // Initialize controllers
   const userController = new UserController(createUserUseCase, updateUserUseCase, deleteUserUseCase, listUsersUseCase);
-  const eventHistoryController = new EventHistoryController(eventStore, userRepository);
 
-  // Register routes
-  registerAuthRoutes(app, authController, authMiddleware);
-  registerUserRoutes(app, userController, authMiddleware);
-  registerEventHistoryRoutes(app, eventHistoryController);
+  // Register standardized error handler
+  const errorHandler = new ErrorHandler();
+  app.setErrorHandler(async (error, request, reply) => {
+    return errorHandler.handle(error, request, reply);
+  });
+
+  // Register standardized routes
+  await app.register(async (fastify) => {
+    await registerUserRoutes(fastify, userController);
+  }, { prefix: '/api/v1' });
+
+  // Health check endpoint with standardized response
+  app.get('/health', async (request, reply) => {
+    return reply.send({
+      success: true,
+      data: {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env.NODE_ENV || 'development'
+      },
+      timestamp: new Date().toISOString()
+    });
+  });
 
   return app;
 }

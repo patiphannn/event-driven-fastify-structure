@@ -1,34 +1,5 @@
-export class DomainError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'DomainError';
-  }
-}
+// Export all error types and utilities
+export * from './ErrorTypes';
 
-export class ValidationError extends DomainError {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ValidationError';
-  }
-}
-
-export class NotFoundError extends DomainError {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NotFoundError';
-  }
-}
-
-export class ConflictError extends DomainError {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ConflictError';
-  }
-}
-
-export class InfrastructureError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InfrastructureError';
-  }
-}
+// Legacy exports for backward compatibility
+export { DomainError } from './ErrorTypes';

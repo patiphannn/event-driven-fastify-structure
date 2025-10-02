@@ -6,10 +6,25 @@ import { User } from '../../domain/entities/User';
 import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { UserUpdatedEvent } from '../../domain/events/UserEvents';
 import { UpdateUserRequest, UpdateUserResponse } from '../../shared/types';
-import { NotFoundError, ConflictError } from '../../shared/errors';
+import { NotFoundError, ConflictError, ValidationError } from '../../shared/errors';
 import { getTraceMetadata } from '../../shared/utils';
 import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
+
+/**
+ * Updates an existing user with proper validation and event publishing.
+ * 
+ * Complex Flow (more validations than create):
+ * 1. Find existing user (must exist)
+ * 2. Check email uniqueness (only if email is changing)
+ * 3. Update only changed fields (avoids unnecessary events)
+ * 4. Save user and publish events via Outbox Pattern
+ * 
+ * Business Rules:
+ * - User must exist (404 if not found)
+ * - Email must be unique across all users
+ * - Only generate events for fields that actually changed
+ */
 
 export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
   constructor(
@@ -30,13 +45,14 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
       });
 
       const result = await this.unitOfWork.execute(async () => {
-        // Find existing user
+        // Step 1: Find existing user - throw 404 if not found
         const existingUser = await this.userRepository.findById(request.id);
         if (!existingUser) {
           throw new NotFoundError(`User with id ${request.id} not found`);
         }
 
-        // Check for email conflicts (if email is being updated)
+        // Step 2: Email uniqueness check (only if email is changing)
+        // This prevents conflicts with other users' emails
         if (request.email && request.email !== existingUser.email) {
           const userWithEmail = await this.userRepository.findByEmail(request.email);
           if (userWithEmail && userWithEmail.id !== request.id) {
@@ -44,16 +60,21 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
           }
         }
 
-        // Update user fields
+        // Step 3: Update only fields that have changed
+        // This follows the principle of minimal updates and accurate event generation
+        // Update email only if it's provided and different from current
         if (request.email && request.email !== existingUser.email) {
           existingUser.updateEmail(request.email, request.updatedBy);
         }
 
+        // Update name only if it's provided and different from current
         if (request.name && request.name !== existingUser.name) {
           existingUser.updateName(request.name, request.updatedBy);
         }
 
-        // Copy domain events before saving (as save() will clear them)
+        // IMPORTANT: Preserve domain events before saving
+        // The domain entity generates events when fields change
+        // We need these events to create outbox events for external systems
         const domainEvents = [...existingUser.domainEvents];
 
         // Save updated user

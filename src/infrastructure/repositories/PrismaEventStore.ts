@@ -2,6 +2,7 @@ import { EventStore, EventStream } from '../../domain/repositories/EventStore';
 import { DomainEvent } from '../../domain/events/DomainEvent';
 import { DatabaseClient } from '../database/DatabaseClient';
 import { PrismaClient } from '@prisma/client';
+import { ConflictError, InternalServerError } from '../../shared/errors';
 import pino from 'pino';
 
 const logger = pino({ name: 'PrismaEventStore' });
@@ -38,8 +39,9 @@ export class PrismaEventStore implements EventStore {
 
         const currentVersion = lastEvent?.eventVersion || 0;
         if (currentVersion !== expectedVersion) {
-          throw new Error(
-            `Concurrency conflict. Expected version ${expectedVersion}, but current version is ${currentVersion}`
+          throw new ConflictError(
+            `Concurrency conflict. Expected version ${expectedVersion}, but current version is ${currentVersion}`,
+            { expectedVersion, currentVersion, aggregateId }
           );
         }
 
