@@ -3,6 +3,8 @@ import { ListUsersRequest, ListUsersResponse } from '../../../shared/types';
 import { UserMapper } from '../../../shared/types/UserDTO';
 import { UserRepository } from '../../../domain/repositories/UserRepository';
 import { CacheService } from '../../../infrastructure/cache/CacheService';
+import { DTOValidation } from '../../../shared/validation/DTOValidation';
+import { ValidationError } from '../../../shared/errors';
 import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
@@ -21,8 +23,15 @@ export class ListUsersUseCaseImpl implements ListUsersUseCase {
     const span = tracer.startSpan('ListUsersUseCase.execute');
 
     try {
-      const page = request.page || 1;
-      const limit = Math.min(request.limit || CONFIG.PAGINATION.DEFAULT_LIMIT, CONFIG.PAGINATION.MAX_LIMIT);
+      // Validate request data using Zod (with defaults)
+      const validationResult = DTOValidation.validateListUsersRequest(request);
+      if (!validationResult.success) {
+        throw new ValidationError(validationResult.error || 'Invalid request data');
+      }
+
+      const validatedRequest = validationResult.data!;
+      const page = validatedRequest.page;
+      const limit = validatedRequest.limit;
 
       span.setAttributes({
         'users.list.page': page,

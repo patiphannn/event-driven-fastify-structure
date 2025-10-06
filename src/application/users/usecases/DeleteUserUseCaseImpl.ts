@@ -7,6 +7,7 @@ import { OutboxEvent } from '../../../domain/entities/OutboxEvent';
 import { DeleteUserRequest, DeleteUserResponse } from '../../../shared/types';
 import { NotFoundError, ValidationError } from '../../../shared/errors';
 import { getTraceMetadata } from '../../../shared/utils';
+import { DTOValidation } from '../../../shared/validation/DTOValidation';
 import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
@@ -22,16 +23,24 @@ export class DeleteUserUseCaseImpl implements DeleteUserUseCase {
     const span = tracer.startSpan('DeleteUserUseCase.execute');
 
     try {
+      // Validate user ID using Zod
+      const validationResult = DTOValidation.validateUserId(request.id);
+      if (!validationResult.success) {
+        throw new ValidationError(validationResult.error || 'Invalid user ID');
+      }
+
+      const validatedId = validationResult.data!;
+      
       span.setAttributes({
-        'user.id': request.id,
+        'user.id': validatedId,
         'operation.type': 'delete_user',
       });
 
       const result = await this.unitOfWork.execute(async () => {
         // Find existing user
-        const existingUser = await this.userRepository.findById(request.id);
+        const existingUser = await this.userRepository.findById(validatedId);
         if (!existingUser) {
-          throw new NotFoundError(`User with id ${request.id} not found`);
+          throw new NotFoundError(`User with id ${validatedId} not found`);
         }
 
         if (existingUser.isDeleted) {

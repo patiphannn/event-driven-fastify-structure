@@ -7,6 +7,7 @@ import { OutboxEvent } from '../../../domain/entities/OutboxEvent';
 import { CreateUserRequest, CreateUserResponse } from '../../../shared/types';
 import { ConflictError, ValidationError } from '../../../shared/errors';
 import { getTraceMetadata } from '../../../shared/utils';
+import { DTOValidation } from '../../../shared/validation/DTOValidation';
 import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
@@ -37,22 +38,30 @@ export class CreateUserUseCaseImpl implements CreateUserUseCase {
     const span = tracer.startSpan('CreateUserUseCase.execute');
     
     try {
+      // Validate request data using Zod
+      const validationResult = DTOValidation.validateCreateUserRequest(request);
+      if (!validationResult.success) {
+        throw new ValidationError(validationResult.error || 'Invalid request data');
+      }
+
+      const validatedRequest = validationResult.data!;
+      
       span.setAttributes({
-        'user.email': request.email,
-        'user.name': request.name,
+        'user.email': validatedRequest.email,
+        'user.name': validatedRequest.name,
       });
 
       // Execute everything in a database transaction to ensure consistency
       // If any step fails, all changes are rolled back
       const result = await this.unitOfWork.execute(async () => {
         // Check if user already exists
-        const existingUser = await this.userRepository.findByEmail(request.email);
+        const existingUser = await this.userRepository.findByEmail(validatedRequest.email);
         if (existingUser) {
-          throw new ConflictError(`User with email ${request.email} already exists`);
+          throw new ConflictError(`User with email ${validatedRequest.email} already exists`);
         }
 
         // Create new user - this generates domain events automatically
-        const user = User.create(request.email, request.name, request.createdBy);
+        const user = User.create(validatedRequest.email, validatedRequest.name, request.createdBy);
         
         // IMPORTANT: Copy domain events before saving 
         // The save() method clears domain events, so we need to preserve them

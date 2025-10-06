@@ -1,5 +1,5 @@
 import { ValidationError } from '../../shared/errors';
-import { validateEmail, validateName } from '../../shared/utils';
+import { UserValidation } from '../../shared/validation/UserValidation';
 import { UserInfo } from '../../shared/types/UserInfo';
 import { AggregateRoot } from './AggregateRoot';
 import { DomainEvent } from '../events/DomainEvent';
@@ -43,14 +43,16 @@ export class User extends AggregateRoot {
   }
 
   private validateEmail(email: string): void {
-    if (!validateEmail(email)) {
-      throw new ValidationError('Invalid email format');
+    const result = UserValidation.validateEmail(email);
+    if (!result.success) {
+      throw new ValidationError(result.error || 'Invalid email format');
     }
   }
 
   private validateName(name: string): void {
-    if (!validateName(name)) {
-      throw new ValidationError('Name must be between 2 and 100 characters');
+    const result = UserValidation.validateName(name);
+    if (!result.success) {
+      throw new ValidationError(result.error || 'Name must be between 2 and 100 characters');
     }
   }
 
@@ -58,11 +60,19 @@ export class User extends AggregateRoot {
    * Static Factory Method: Create New User
    */
   static create(email: string, name: string, createdBy?: UserInfo): User {
+    // Use Zod validation and transformation
+    const validationResult = UserValidation.validateCreateUser({ email, name });
+    if (!validationResult.success) {
+      throw new ValidationError(validationResult.error || 'Invalid user data');
+    }
+
+    const { email: validatedEmail, name: validatedName } = validationResult.data!;
     const id = crypto.randomUUID();
+    
     const user = new User(
       id, 
-      email.toLowerCase().trim(), 
-      name.trim(), 
+      validatedEmail, // Already lowercased and trimmed by Zod
+      validatedName,  // Already trimmed by Zod
       new Date(), 
       new Date(), 
       null, 
@@ -90,8 +100,12 @@ export class User extends AggregateRoot {
       throw new ValidationError('Cannot update deleted user');
     }
 
-    this.validateName(newName);
-    const trimmedName = newName.trim();
+    const validationResult = UserValidation.validateName(newName);
+    if (!validationResult.success) {
+      throw new ValidationError(validationResult.error || 'Invalid name');
+    }
+
+    const trimmedName = validationResult.data!; // Already trimmed by Zod
     
     if (trimmedName === this.name) {
       return; // No change needed
@@ -119,8 +133,12 @@ export class User extends AggregateRoot {
       throw new ValidationError('Cannot update deleted user');
     }
 
-    this.validateEmail(newEmail);
-    const normalizedEmail = newEmail.toLowerCase().trim();
+    const validationResult = UserValidation.validateEmail(newEmail);
+    if (!validationResult.success) {
+      throw new ValidationError(validationResult.error || 'Invalid email');
+    }
+
+    const normalizedEmail = validationResult.data!; // Already lowercased and trimmed by Zod
     
     if (normalizedEmail === this.email) {
       return; // No change needed

@@ -8,6 +8,7 @@ import { UserUpdatedEvent } from '../../../domain/events/UserEvents';
 import { UpdateUserRequest, UpdateUserResponse } from '../../../shared/types';
 import { NotFoundError, ConflictError, ValidationError } from '../../../shared/errors';
 import { getTraceMetadata } from '../../../shared/utils';
+import { DTOValidation } from '../../../shared/validation/DTOValidation';
 import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
@@ -38,10 +39,18 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     const span = tracer.startSpan('UpdateUserUseCase.execute');
     
     try {
+      // Validate request data using Zod
+      const validationResult = DTOValidation.validateUpdateUserRequest(request);
+      if (!validationResult.success) {
+        throw new ValidationError(validationResult.error || 'Invalid request data');
+      }
+
+      const validatedRequest = validationResult.data!;
+      
       span.setAttributes({
         'user.id': request.id,
-        'user.email': request.email || 'not_updated',
-        'user.name': request.name || 'not_updated',
+        'user.email': validatedRequest.email || 'not_updated',
+        'user.name': validatedRequest.name || 'not_updated',
       });
 
       const result = await this.unitOfWork.execute(async () => {
@@ -53,23 +62,23 @@ export class UpdateUserUseCaseImpl implements UpdateUserUseCase {
 
         // Step 2: Email uniqueness check (only if email is changing)
         // This prevents conflicts with other users' emails
-        if (request.email && request.email !== existingUser.email) {
-          const userWithEmail = await this.userRepository.findByEmail(request.email);
+        if (validatedRequest.email && validatedRequest.email !== existingUser.email) {
+          const userWithEmail = await this.userRepository.findByEmail(validatedRequest.email);
           if (userWithEmail && userWithEmail.id !== request.id) {
-            throw new ConflictError(`User with email ${request.email} already exists`);
+            throw new ConflictError(`User with email ${validatedRequest.email} already exists`);
           }
         }
 
         // Step 3: Update only fields that have changed
         // This follows the principle of minimal updates and accurate event generation
         // Update email only if it's provided and different from current
-        if (request.email && request.email !== existingUser.email) {
-          existingUser.updateEmail(request.email, request.updatedBy);
+        if (validatedRequest.email && validatedRequest.email !== existingUser.email) {
+          existingUser.updateEmail(validatedRequest.email, request.updatedBy);
         }
 
         // Update name only if it's provided and different from current
-        if (request.name && request.name !== existingUser.name) {
-          existingUser.updateName(request.name, request.updatedBy);
+        if (validatedRequest.name && validatedRequest.name !== existingUser.name) {
+          existingUser.updateName(validatedRequest.name, request.updatedBy);
         }
 
         // IMPORTANT: Preserve domain events before saving
