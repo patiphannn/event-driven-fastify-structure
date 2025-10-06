@@ -21,7 +21,7 @@ module.exports = {
     '!src/infrastructure/tracing/**',
     '!src/presentation/**',
     '!src/infrastructure/swagger/**',
-    '!src/application/usecases/ListUsersUseCaseImpl.ts',
+    '!src/application/users/usecases/ListUsersUseCaseImpl.ts',
     '!src/infrastructure/repositories/EventSourcedUserRepository.ts',
     '!src/infrastructure/repositories/PrismaOutboxRepository.ts',
     '!src/domain/events/UserCreated.ts',

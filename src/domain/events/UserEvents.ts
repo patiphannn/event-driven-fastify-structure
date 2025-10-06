@@ -39,10 +39,6 @@ export interface UserUpdatedEventData {
     name: string;
     email: string;
   };
-  previousValues: {
-    name?: string;
-    email?: string;
-  };
 }
 
 export class UserUpdatedEvent extends BaseDomainEvent {
@@ -66,9 +62,6 @@ export class UserUpdatedEvent extends BaseDomainEvent {
 }
 
 export interface UserDeletedEventData {
-  email: string;
-  name: string;
-  deletedAt: Date;
   deletedBy?: {
     id: string;
     name: string;

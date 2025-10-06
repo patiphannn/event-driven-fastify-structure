@@ -1,7 +1,7 @@
-import { DeleteUserUseCaseImpl } from '../../application/usecases/DeleteUserUseCaseImpl';
+import { DeleteUserUseCaseImpl } from '../../application/users/usecases/DeleteUserUseCaseImpl';
 import { UserRepository } from '../../domain/repositories/UserRepository';
 import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
-import { UnitOfWork } from '../../application/ports/UnitOfWork';
+import { UnitOfWork } from '../../application/shared/ports/UnitOfWork';
 import { User } from '../../domain/entities/User';
 import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { NotFoundError } from '../../shared/errors';

@@ -1,14 +1,14 @@
 import { UpdateUserUseCase } from '../ports/UpdateUserUseCase';
-import { UnitOfWork } from '../ports/UnitOfWork';
-import { UserRepository } from '../../domain/repositories/UserRepository';
-import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
-import { User } from '../../domain/entities/User';
-import { OutboxEvent } from '../../domain/entities/OutboxEvent';
-import { UserUpdatedEvent } from '../../domain/events/UserEvents';
-import { UpdateUserRequest, UpdateUserResponse } from '../../shared/types';
-import { NotFoundError, ConflictError, ValidationError } from '../../shared/errors';
-import { getTraceMetadata } from '../../shared/utils';
-import { CONFIG } from '../../shared/config';
+import { UnitOfWork } from '../../shared/ports/UnitOfWork';
+import { UserRepository } from '../../../domain/repositories/UserRepository';
+import { OutboxRepository } from '../../../domain/repositories/OutboxRepository';
+import { User } from '../../../domain/entities/User';
+import { OutboxEvent } from '../../../domain/entities/OutboxEvent';
+import { UserUpdatedEvent } from '../../../domain/events/UserEvents';
+import { UpdateUserRequest, UpdateUserResponse } from '../../../shared/types';
+import { NotFoundError, ConflictError, ValidationError } from '../../../shared/errors';
+import { getTraceMetadata } from '../../../shared/utils';
+import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 /**

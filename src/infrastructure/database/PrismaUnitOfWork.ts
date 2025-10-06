@@ -1,4 +1,4 @@
-import { UnitOfWork } from '../../application/ports/UnitOfWork';
+import { UnitOfWork } from '../../application/shared/ports/UnitOfWork';
 import { DatabaseClient } from './DatabaseClient';
 
 export class PrismaUnitOfWork implements UnitOfWork {

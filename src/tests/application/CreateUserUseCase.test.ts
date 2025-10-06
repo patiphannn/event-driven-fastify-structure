@@ -1,7 +1,7 @@
-import { CreateUserUseCaseImpl } from '../../application/usecases/CreateUserUseCaseImpl';
+import { CreateUserUseCaseImpl } from '../../application/users/usecases/CreateUserUseCaseImpl';
 import { UserRepository } from '../../domain/repositories/UserRepository';
 import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
-import { UnitOfWork } from '../../application/ports/UnitOfWork';
+import { UnitOfWork } from '../../application/shared/ports/UnitOfWork';
 import { User } from '../../domain/entities/User';
 import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { ConflictError } from '../../shared/errors';

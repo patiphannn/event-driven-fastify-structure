@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { BaseController } from './BaseController';
-import { CreateUserUseCase } from '../../application/ports/CreateUserUseCase';
-import { UpdateUserUseCase } from '../../application/ports/UpdateUserUseCase';
-import { DeleteUserUseCase } from '../../application/ports/DeleteUserUseCase';
-import { ListUsersUseCase } from '../../application/usecases/ListUsersUseCaseImpl';
+import { CreateUserUseCase } from '../../application/users/ports/CreateUserUseCase';
+import { UpdateUserUseCase } from '../../application/users/ports/UpdateUserUseCase';
+import { DeleteUserUseCase } from '../../application/users/ports/DeleteUserUseCase';
+import { ListUsersUseCase } from '../../application/users/usecases/ListUsersUseCaseImpl';
 import { ValidationError, NotFoundError, ConflictError } from '../../shared/errors';
 import { CONFIG } from '../../shared/config';
 import type { CreateUserRequest, UpdateUserRequest, DeleteUserRequest, ListUsersRequest } from '../../shared/types';

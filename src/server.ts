@@ -17,10 +17,10 @@ import { PrismaOutboxRepository } from './infrastructure/repositories/PrismaOutb
 import { PrismaUnitOfWork } from './infrastructure/database/PrismaUnitOfWork';
 import { PrismaEventStore } from './infrastructure/repositories/PrismaEventStore';
 import { EventSourcedUserRepository } from './infrastructure/repositories/EventSourcedUserRepository';
-import { CreateUserUseCaseImpl } from './application/usecases/CreateUserUseCaseImpl';
-import { UpdateUserUseCaseImpl } from './application/usecases/UpdateUserUseCaseImpl';
-import { DeleteUserUseCaseImpl } from './application/usecases/DeleteUserUseCaseImpl';
-import { ListUsersUseCaseImpl } from './application/usecases/ListUsersUseCaseImpl';
+import { CreateUserUseCaseImpl } from './application/users/usecases/CreateUserUseCaseImpl';
+import { UpdateUserUseCaseImpl } from './application/users/usecases/UpdateUserUseCaseImpl';
+import { DeleteUserUseCaseImpl } from './application/users/usecases/DeleteUserUseCaseImpl';
+import { ListUsersUseCaseImpl } from './application/users/usecases/ListUsersUseCaseImpl';
 import { CacheService } from './infrastructure/cache/CacheService';
 import { UserController } from './presentation/controllers/UserController';
 import { registerUserRoutes } from './presentation/routes/userRoutes';

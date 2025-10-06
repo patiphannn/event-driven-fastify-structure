@@ -1,7 +1,7 @@
-import { UpdateUserUseCaseImpl } from '../../application/usecases/UpdateUserUseCaseImpl';
+import { UpdateUserUseCaseImpl } from '../../application/users/usecases/UpdateUserUseCaseImpl';
 import { UserRepository } from '../../domain/repositories/UserRepository';
 import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
-import { UnitOfWork } from '../../application/ports/UnitOfWork';
+import { UnitOfWork } from '../../application/shared/ports/UnitOfWork';
 import { User } from '../../domain/entities/User';
 import { OutboxEvent } from '../../domain/entities/OutboxEvent';
 import { NotFoundError, ConflictError } from '../../shared/errors';

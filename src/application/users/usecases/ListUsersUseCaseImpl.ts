@@ -1,8 +1,9 @@
-import { UserRepository } from '../../domain/repositories/UserRepository';
-import { ListUsersRequest, ListUsersResponse } from '../../shared/types';
-import { UserMapper } from '../../shared/types/UserDTO';
-import { CacheService } from '../../infrastructure/cache/CacheService';
-import { CONFIG } from '../../shared/config';
+import { UnitOfWork } from '../../shared/ports/UnitOfWork';
+import { ListUsersRequest, ListUsersResponse } from '../../../shared/types';
+import { UserMapper } from '../../../shared/types/UserDTO';
+import { UserRepository } from '../../../domain/repositories/UserRepository';
+import { CacheService } from '../../../infrastructure/cache/CacheService';
+import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 export interface ListUsersUseCase {

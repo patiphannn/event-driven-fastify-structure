@@ -1,13 +1,13 @@
 import { CreateUserUseCase } from '../ports/CreateUserUseCase';
-import { UnitOfWork } from '../ports/UnitOfWork';
-import { UserRepository } from '../../domain/repositories/UserRepository';
-import { OutboxRepository } from '../../domain/repositories/OutboxRepository';
-import { User } from '../../domain/entities/User';
-import { OutboxEvent } from '../../domain/entities/OutboxEvent';
-import { CreateUserRequest, CreateUserResponse } from '../../shared/types';
-import { ConflictError, ValidationError } from '../../shared/errors';
-import { getTraceMetadata } from '../../shared/utils';
-import { CONFIG } from '../../shared/config';
+import { UnitOfWork } from '../../shared/ports/UnitOfWork';
+import { UserRepository } from '../../../domain/repositories/UserRepository';
+import { OutboxRepository } from '../../../domain/repositories/OutboxRepository';
+import { User } from '../../../domain/entities/User';
+import { OutboxEvent } from '../../../domain/entities/OutboxEvent';
+import { CreateUserRequest, CreateUserResponse } from '../../../shared/types';
+import { ConflictError, ValidationError } from '../../../shared/errors';
+import { getTraceMetadata } from '../../../shared/utils';
+import { CONFIG } from '../../../shared/config';
 import { trace } from '@opentelemetry/api';
 
 /**
