@@ -1,5 +1,6 @@
 import { UserRepository } from '../../domain/repositories/UserRepository';
 import { ListUsersRequest, ListUsersResponse } from '../../shared/types';
+import { UserMapper } from '../../shared/types/UserDTO';
 import { CacheService } from '../../infrastructure/cache/CacheService';
 import { CONFIG } from '../../shared/config';
 import { trace } from '@opentelemetry/api';
@@ -39,21 +40,13 @@ export class ListUsersUseCaseImpl implements ListUsersUseCase {
         return cached;
       }
 
-      // Fetch from database
+      // Fetch from database - Repository returns Domain Entities
       const { users, total } = await this.userRepository.findMany(page, limit);
       const totalPages = Math.ceil(total / limit);
 
+      // Use Case transforms Entities to DTOs for API response
       const response: ListUsersResponse = {
-        users: users.map(user => ({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          createdAt: user.createdAt.toISOString(),
-          updatedAt: user.updatedAt.toISOString(),
-          createdBy: user.createdBy || undefined,
-          updatedBy: user.updatedBy || undefined,
-          deletedBy: user.deletedBy || undefined,
-        })),
+        users: UserMapper.toDTOs(users), // 🎯 Clean mapping using mapper
         pagination: {
           page,
           limit,

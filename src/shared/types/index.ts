@@ -1,4 +1,5 @@
 import { UserInfo } from './UserInfo';
+import { UserDTO } from './UserDTO';
 
 export interface TraceMetadata {
   traceId: string;
@@ -22,16 +23,7 @@ export interface ListUsersRequest {
 }
 
 export interface ListUsersResponse {
-  users: Array<{
-    id: string;
-    email: string;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-    createdBy?: UserInfo;
-    updatedBy?: UserInfo;
-    deletedBy?: UserInfo;
-  }>;
+  users: UserDTO[];
   pagination: {
     page: number;
     limit: number;
