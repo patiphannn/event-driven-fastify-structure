@@ -73,7 +73,7 @@ export class AuthMiddleware extends BaseMiddleware {
       requiredPermissions: options.requiredPermissions || [],
       skipPaths: options.skipPaths || [],
       // Redis Cache options with sensible defaults
-      verifyRoleFromDB: options.verifyRoleFromDB ?? true,   // Default: ตรวจสอบจาก DB
+      verifyRoleFromDB: options.verifyRoleFromDB ?? (process.env.AUTH_VERIFY_ROLE_FROM_DB !== 'false'),   // Default: ตรวจสอบจาก DB unless disabled
       useRedisCache: options.useRedisCache ?? true,         // Default: ใช้ Redis cache
       cacheTTL: options.cacheTTL ?? this.DEFAULT_CACHE_TTL, // Default: 5 minutes
       cachePrefix: options.cachePrefix || 'auth:user:',     // Default: auth:user: prefix

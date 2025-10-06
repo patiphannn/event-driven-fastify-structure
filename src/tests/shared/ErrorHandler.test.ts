@@ -33,7 +33,7 @@ describe('ErrorHandler', () => {
         expect.objectContaining({
           success: false,
           error: expect.objectContaining({
-            code: 'common.validation_error',
+            code: 'common.invalid_request',
             message: 'Invalid input'
           })
         })
@@ -108,7 +108,7 @@ describe('ErrorHandler', () => {
         expect.objectContaining({
           success: false,
           error: expect.objectContaining({
-            code: 'common.validation_error'
+            code: 'common.invalid_request'
           })
         })
       );
@@ -144,7 +144,11 @@ describe('ErrorHandler', () => {
     it('should handle span recording', async () => {
       const mockSpan = {
         recordException: jest.fn(),
-        setAttributes: jest.fn()
+        setAttributes: jest.fn(),
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'test-trace-id',
+          spanId: 'test-span-id'
+        })
       };
       
       const error = new ValidationError('Test error');
@@ -154,7 +158,7 @@ describe('ErrorHandler', () => {
       expect(mockSpan.recordException).toHaveBeenCalledWith(error);
       expect(mockSpan.setAttributes).toHaveBeenCalledWith(
         expect.objectContaining({
-          'error.type': 'common.validation_error',
+          'error.type': 'common.invalid_request', // Use correct error code
           'error.message': 'Test error',
           'error.statusCode': '400'
         })

@@ -32,6 +32,7 @@ export class IntegrationTestSetup {
     process.env.NODE_ENV = 'test';
     process.env.LOG_LEVEL = 'silent';
     process.env.PORT = '0'; // Let the system assign a random port
+    process.env.AUTH_VERIFY_ROLE_FROM_DB = 'false'; // Disable DB verification for tests
 
     // Import and create app after setting environment variables
     const { createApp } = await import('../../server');

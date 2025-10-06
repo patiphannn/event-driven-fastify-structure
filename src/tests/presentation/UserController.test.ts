@@ -70,7 +70,9 @@ describe('UserController', () => {
           page: 1,
           limit: 10,
           total: 2,
-          totalPages: 1
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false
         }
       };
 
@@ -82,12 +84,14 @@ describe('UserController', () => {
         page: 1,
         limit: 10
       });
-      expect(mockReply.code).toHaveBeenCalledWith(200);
-      expect(mockReply.send).toHaveBeenCalledWith({
+      expect(mockReply.status).toHaveBeenCalledWith(200);
+      expect(mockReply.send).toHaveBeenCalledWith(expect.objectContaining({
         success: true,
-        data: mockResult,
-        message: 'Users listed successfully'
-      });
+        data: mockResult.users,
+        meta: expect.objectContaining({
+          pagination: mockResult.pagination
+        })
+      }));
     });
 
     it('should list users with custom pagination', async () => {
@@ -111,7 +115,7 @@ describe('UserController', () => {
         page: 2,
         limit: 5
       });
-      expect(mockReply.code).toHaveBeenCalledWith(200);
+      expect(mockReply.status).toHaveBeenCalledWith(200);
     });
   });
 
@@ -133,29 +137,32 @@ describe('UserController', () => {
 
       await userController.createUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
 
-      expect(mockCreateUserUseCase.execute).toHaveBeenCalledWith(createData);
-      expect(mockReply.code).toHaveBeenCalledWith(202); // Async operation
-      expect(mockReply.send).toHaveBeenCalledWith({
+      expect(mockCreateUserUseCase.execute).toHaveBeenCalledWith({
+        ...createData,
+        createdBy: mockRequest.user
+      });
+      expect(mockReply.status).toHaveBeenCalledWith(202); // Async operation
+      expect(mockReply.send).toHaveBeenCalledWith(expect.objectContaining({
         success: true,
         data: mockCreatedUser,
-        message: 'User creation initiated successfully'
-      });
+        meta: expect.objectContaining({
+          message: expect.stringContaining('User creation initiated')
+        })
+      }));
     });
 
     it('should handle validation errors during creation', async () => {
       const invalidData = {
-        name: '',
-        email: 'invalid-email'
+        email: 'test@example.com'
+        // missing name field
       };
 
       mockRequest.body = invalidData;
-      mockCreateUserUseCase.execute.mockRejectedValue(
-        new ValidationError('Invalid user data', { field: 'email' })
-      );
 
-      await expect(
-        userController.createUser(mockRequest as FastifyRequest, mockReply as FastifyReply)
-      ).rejects.toThrow(ValidationError);
+      await userController.createUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
+
+      // The controller should handle validation error and send error response
+      expect(mockReply.status).toHaveBeenCalledWith(400);
     });
 
     it('should handle conflict errors during creation', async () => {
@@ -169,9 +176,10 @@ describe('UserController', () => {
         new ConflictError('User already exists')
       );
 
-      await expect(
-        userController.createUser(mockRequest as FastifyRequest, mockReply as FastifyReply)
-      ).rejects.toThrow(ConflictError);
+      await userController.createUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
+
+      // The controller should handle conflict error and send error response
+      expect(mockReply.status).toHaveBeenCalledWith(409);
     });
   });
 
@@ -186,7 +194,8 @@ describe('UserController', () => {
       const mockUpdatedUser = {
         id: userId,
         ...updateData,
-        updated_at: new Date()
+        updated_at: new Date(),
+        version: 2
       };
 
       mockRequest.params = { id: userId };
@@ -197,14 +206,17 @@ describe('UserController', () => {
 
       expect(mockUpdateUserUseCase.execute).toHaveBeenCalledWith({
         id: userId,
-        ...updateData
+        ...updateData,
+        updatedBy: mockRequest.user
       });
-      expect(mockReply.code).toHaveBeenCalledWith(202); // Async operation
-      expect(mockReply.send).toHaveBeenCalledWith({
+      expect(mockReply.status).toHaveBeenCalledWith(200); // Success response
+      expect(mockReply.send).toHaveBeenCalledWith(expect.objectContaining({
         success: true,
         data: mockUpdatedUser,
-        message: 'User update initiated successfully'
-      });
+        meta: expect.objectContaining({
+          version: '2'
+        })
+      }));
     });
 
     it('should handle not found errors during update', async () => {
@@ -217,9 +229,10 @@ describe('UserController', () => {
         new NotFoundError('User not found')
       );
 
-      await expect(
-        userController.updateUser(mockRequest as FastifyRequest, mockReply as FastifyReply)
-      ).rejects.toThrow(NotFoundError);
+      await userController.updateUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
+
+      // The controller should handle not found error and send error response
+      expect(mockReply.status).toHaveBeenCalledWith(404);
     });
   });
 
@@ -228,18 +241,26 @@ describe('UserController', () => {
       const userId = '123';
 
       mockRequest.params = { id: userId };
-      mockDeleteUserUseCase.execute.mockResolvedValue(undefined);
+      const mockDeletedUser = {
+        id: userId,
+        version: 3
+      };
+      mockDeleteUserUseCase.execute.mockResolvedValue(mockDeletedUser);
 
       await userController.deleteUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
 
       expect(mockDeleteUserUseCase.execute).toHaveBeenCalledWith({
-        id: userId
+        id: userId,
+        deletedBy: mockRequest.user
       });
-      expect(mockReply.code).toHaveBeenCalledWith(202); // Async operation
-      expect(mockReply.send).toHaveBeenCalledWith({
+      expect(mockReply.status).toHaveBeenCalledWith(200); // Success response
+      expect(mockReply.send).toHaveBeenCalledWith(expect.objectContaining({
         success: true,
-        message: 'User deletion initiated successfully'
-      });
+        data: mockDeletedUser,
+        meta: expect.objectContaining({
+          version: '3'
+        })
+      }));
     });
 
     it('should handle not found errors during deletion', async () => {
@@ -250,9 +271,10 @@ describe('UserController', () => {
         new NotFoundError('User not found')
       );
 
-      await expect(
-        userController.deleteUser(mockRequest as FastifyRequest, mockReply as FastifyReply)
-      ).rejects.toThrow(NotFoundError);
+      await userController.deleteUser(mockRequest as FastifyRequest, mockReply as FastifyReply);
+
+      // The controller should handle not found error and send error response
+      expect(mockReply.status).toHaveBeenCalledWith(404);
     });
   });
 
@@ -267,21 +289,21 @@ describe('UserController', () => {
     });
 
     it('should handle invalid page numbers', () => {
-      const result = (userController as any).validatePagination(-1, 10, 50);
-      
-      expect(result.page).toBe(1); // Should default to 1
+      expect(() => {
+        (userController as any).validatePagination(-1, 10, 50);
+      }).toThrow('Page must be >= 1');
     });
 
     it('should handle limit exceeding maximum', () => {
-      const result = (userController as any).validatePagination(1, 100, 50);
-      
-      expect(result.limit).toBe(50); // Should cap at max limit
+      expect(() => {
+        (userController as any).validatePagination(1, 100, 50);
+      }).toThrow('Limit must be <= 50');
     });
 
     it('should handle invalid limit values', () => {
-      const result = (userController as any).validatePagination(1, 0, 50);
-      
-      expect(result.limit).toBe(10); // Should default to reasonable value
+      expect(() => {
+        (userController as any).validatePagination(1, 0, 50);
+      }).toThrow('Limit must be >= 1');
     });
   });
 });

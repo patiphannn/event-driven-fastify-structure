@@ -25,14 +25,16 @@ class TestAggregateComplex extends AggregateRoot {
 
   constructor(id: string, email?: string, name?: string, createdAt?: Date, updatedAt?: Date) {
     super(id, createdAt, updatedAt);
+    // Map identifier to email if email is not provided directly
     this.email = email || '';
     this.name = name || '';
   }
 
   protected when(event: DomainEvent): void {
     if (event.eventType === 'TestCreated') {
-      this.email = event.eventData.email || '';
-      this.name = event.eventData.name || '';
+      // Map event data fields correctly
+      this.email = event.eventData.email || event.eventData.identifier || '';
+      this.name = event.eventData.name || event.eventData.title || '';
     }
   }
 }

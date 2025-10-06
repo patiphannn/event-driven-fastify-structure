@@ -41,8 +41,20 @@ export const getTraceMetadata = (): TraceMetadata | undefined => {
  * @returns true if valid format, false otherwise
  */
 export const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  if (typeof email !== 'string' || !email) {
+    return false;
+  }
+  
+  // More strict email validation - requires TLD
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const trimmedEmail = email.trim();
+  
+  // Additional checks for edge cases
+  if (trimmedEmail.includes('..') || trimmedEmail.includes(' ')) {
+    return false;
+  }
+  
+  return emailRegex.test(trimmedEmail);
 };
 
 /**
@@ -54,5 +66,10 @@ export const validateEmail = (email: string): boolean => {
  * @returns true if valid length, false otherwise
  */
 export const validateName = (name: string): boolean => {
-  return name.trim().length >= 2 && name.trim().length <= 100;
+  if (typeof name !== 'string' || !name) {
+    return false;
+  }
+  
+  const trimmedLength = name.trim().length;
+  return trimmedLength >= 2 && trimmedLength <= 100;
 };
